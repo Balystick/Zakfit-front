@@ -12,6 +12,7 @@ struct UserAuthView: View {
     @State private var email: String = ""
     @State private var password: String = ""
     @StateObject var viewModel = UserAuthViewModel()
+    @State private var bounceEffect = false
     
     var body: some View {
         NavigationStack {
@@ -21,8 +22,17 @@ struct UserAuthView: View {
                 Image(.zakfit)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 150, height: 150)
-                    .clipShape(Circle())
+                    .frame(width: 350)
+                    .scaleEffect(bounceEffect ? 1.0 : 0.5)
+                    .offset(y: bounceEffect ? 0 : -200)
+                    .animation(
+                        Animation.interpolatingSpring(stiffness: 100, damping: 10)
+                            .delay(0.3),
+                        value: bounceEffect
+                    )
+                    .onAppear {
+                        bounceEffect = true
+                    }
                 
                 Spacer()
                 
@@ -30,13 +40,15 @@ struct UserAuthView: View {
                     VStack(alignment: .leading) {
                         Text("Email")
                             .fontWeight(.semibold)
+                            .foregroundColor(Color(.darkGray))
                         TextField("Entrer votre email", text: $viewModel.email)
+                            .foregroundColor(Color(.darkGray))
                             .padding(10)
                             .frame(width: 300)
                             .frame(maxWidth: .infinity)
                             .overlay {
                                 RoundedRectangle(cornerRadius: 8)
-                                    .stroke(lineWidth: 1)
+                                    .stroke(Color(.darkGray), lineWidth: 1)
                             }
                             .keyboardType(.emailAddress)
                             .autocapitalization(.none)
@@ -45,17 +57,18 @@ struct UserAuthView: View {
                     VStack(alignment: .leading) {
                         Text("Mot de passe")
                             .fontWeight(.semibold)
+                            .foregroundColor(Color(.darkGray))
                         SecureField("Entrer votre mot de passe", text: $viewModel.password)
                             .padding(10)
                             .frame(width: 300)
                             .frame(maxWidth: .infinity)
                             .overlay {
                                 RoundedRectangle(cornerRadius: 8)
-                                    .stroke(lineWidth: 1)
+                                    .stroke(Color(.darkGray), lineWidth: 1)
                             }
                     }
                 }
-                .padding(.horizontal, 32)
+                .padding(.horizontal, 20)
                 
                 Spacer()
                 
@@ -68,14 +81,17 @@ struct UserAuthView: View {
                         Text("S'inscrire")
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .background(Color.black)
+                            .background(Color(.darkGray))
                             .foregroundColor(.white)
                             .fontWeight(.semibold)
                             .clipShape(RoundedRectangle(cornerRadius: 8))
-                            .padding(.horizontal)
+                            .padding(.leading, 20)
                             .layoutPriority(1)
                     }
                     
+                    Spacer()
+                        .frame(width: 20)
+                
                     Button {
                         Task {
                             await viewModel.login(authViewModel: authViewModel)
@@ -84,17 +100,15 @@ struct UserAuthView: View {
                         Text("Se connecter")
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .background(Color.black)
+                            .background(Color(.darkGray))
                             .foregroundColor(.white)
                             .fontWeight(.semibold)
                             .clipShape(RoundedRectangle(cornerRadius: 8))
-                            .padding(.horizontal)
+                            .padding(.trailing, 20)
                             .layoutPriority(1)
                     }
                 }
-                
-                Spacer()
-                
+                                
                 .alert(item: $viewModel.errorAlert) { errorAlert in
                     Alert(
                         title: Text("Erreur"),
