@@ -40,7 +40,7 @@ struct TabBarView: View {
                 }
                 .tag(Tab.activityTracking)
             
-            Text("Profile")
+            ProfileView()
                 .tabItem {
                     Image(systemName: Tab.profile.rawValue)
                     Text("Profil")
