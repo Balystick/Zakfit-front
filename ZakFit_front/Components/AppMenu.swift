@@ -37,3 +37,5 @@ struct AppMenu: View {
         .padding(.vertical, 5)
     }
 }
+
+// AppMenu(label: "", options: viewModel.,selectedOption: $viewModel.)

@@ -14,8 +14,7 @@ struct AppDatePicker: View {
     var body: some View {
         HStack {
             Text(label)
-                .font(.subheadline)
-                .foregroundColor(.gray)
+                .fontWeight(.medium)
             Spacer()
             DatePicker(
                 "",
@@ -26,7 +25,11 @@ struct AppDatePicker: View {
                 displayedComponents: .date
             )
             .labelsHidden()
+            .tint(.orange)
         }
         .padding(.vertical, 5)
     }
 }
+
+// AppDatePicker(label: "", date: $viewModel.)
+

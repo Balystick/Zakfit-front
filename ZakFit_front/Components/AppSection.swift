@@ -28,3 +28,5 @@ struct AppSection<Content: View>: View {
         }
     }
 }
+
+//  AppSection(title: "Informations personnelles") { PersonalInfoView() }

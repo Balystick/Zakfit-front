@@ -14,7 +14,8 @@ class ProfileViewModel: ObservableObject {
     @Published var firstName: String = ""
     @Published var lastName: String = ""
     @Published var email: String = ""
-    @Published var gender: String = "Homme"
+    @Published var sexe: String = "Homme"
+    let sexeOptions = [ "Homme", "Femme" ]
     @Published var dateOfBirth: Date? = nil
     @Published var height: Float? = nil
     @Published var weight: Float = 75.0
@@ -33,7 +34,7 @@ class ProfileViewModel: ObservableObject {
         "Personnalisée"
     ]
     
-    // Picker
+    // ActivityLevel
     @Published var activityLevel: String = "Modéré"
     let activityOptions = [
         "Sédentaire",
@@ -42,13 +43,15 @@ class ProfileViewModel: ObservableObject {
         "Très actif"
     ]
     
+    //Energie Consumption
+    
     func loadProfile() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             if !self.isProfileLoaded {
                 self.firstName = "Jean"
                 self.lastName = "Dupont"
                 self.email = "jean.dupont@example.com"
-                self.gender = "Homme"
+                self.sexe = "Homme"
                 self.weight = 75.0
                 self.activityLevel = "Modéré"
                 self.isProfileLoaded = true

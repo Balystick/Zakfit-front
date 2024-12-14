@@ -18,12 +18,12 @@ struct ProfileView: View {
                         ActivityLevelView()
                     }
                     
-                    AppSection(title: "Consommation énergétique") {
-                        EnergyConsumptionView()
+                    AppSection(title: "Poids") {
+                        WeightView()
                     }
                     
-                    AppSection(title: "Dépense énergétique") {
-                        EnergyExpenditureView()
+                    AppSection(title: "Bilan énergétique") {
+                        EnergyBalanceView()
                     }
                     
                     AppSection(title: "Préférences alimentaires") {

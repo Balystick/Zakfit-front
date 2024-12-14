@@ -27,3 +27,5 @@ struct AppPicker<T: Hashable>: View {
         .padding(.vertical, 5)
     }
 }
+
+// AppPicker(label: "", options: viewModel.,selection: $viewModel.)

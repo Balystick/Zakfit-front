@@ -79,12 +79,12 @@ struct UserAuthView: View {
                         }
                     } label: {
                         Text("S'inscrire")
+                            .fontWeight(.bold)
                             .padding()
                             .frame(maxWidth: .infinity)
                             .background(Color(.darkGray))
                             .foregroundColor(.white)
-                            .fontWeight(.semibold)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                            .cornerRadius(10)
                             .padding(.leading, 20)
                             .layoutPriority(1)
                     }
@@ -100,7 +100,7 @@ struct UserAuthView: View {
                         Text("Se connecter")
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .background(Color(.darkGray))
+                            .background(Color.orange)
                             .foregroundColor(.white)
                             .fontWeight(.semibold)
                             .clipShape(RoundedRectangle(cornerRadius: 8))
