@@ -11,7 +11,7 @@ struct DashboardView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
     
     var body: some View {
-        Text(authViewModel.currentUser!.email)
+        Text(authViewModel.currentUser?.email ?? "No user")
     }
 }
 

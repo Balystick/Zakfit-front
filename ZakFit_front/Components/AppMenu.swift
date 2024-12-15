@@ -28,9 +28,7 @@ struct AppMenu: View {
             } label: {
                 HStack {
                     Text(selectedOption)
-                        .foregroundColor(.gray)
                     Image(systemName: "chevron.up.chevron.down")
-                        .foregroundColor(.gray)
                 }
             }
         }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct MealTypeDateTimeView: View {
+struct MealDescView: View {
     @State private var selectedDate: Date? = nil
     @State private var selectedTime: Date? = nil
     @State private var food: Double = 75.0

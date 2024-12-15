@@ -29,7 +29,6 @@ struct AppFieldWithEdit<T: LosslessStringConvertible>: View {
                 
                 if let unit = unit {
                     Text(unit)
-                        .foregroundColor(.gray)
                 }
             } else {
                 Text(label)
@@ -37,18 +36,15 @@ struct AppFieldWithEdit<T: LosslessStringConvertible>: View {
                 Spacer()
                 HStack {
                     Text("\(value)")
-                        .foregroundColor(.gray)
                         .onTapGesture {
                             temporaryValue = "\(value)"
                             isEditing = true
                         }
                     if let unit = unit {
                         Text(unit)
-                            .foregroundColor(.gray)
                     }
                     Image(systemName: "chevron.right")
                         .font(.caption)
-                        .foregroundColor(.gray)
                 }
             }
         }
@@ -56,5 +52,8 @@ struct AppFieldWithEdit<T: LosslessStringConvertible>: View {
     }
 }
 
-//  AppFieldWithEdit(label: "", value: $viewModel., unit: "kg")
+//  AppFieldWithEdit(
+//    label: "",
+//    value: $viewModel.,
+//    unit: "kg")
 

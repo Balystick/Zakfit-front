@@ -55,52 +55,52 @@ struct TabBarView: View {
                     VStack {
                         HStack {
                             Text("Calories consommées :")
-                                .fontWeight(.medium)
+                                .font(.callout)
                             Text("1500")
-                                .fontWeight(.medium)
+                                .font(.callout)
                                 .foregroundColor(Color(red: 0.0, green: 0.5, blue: 0.0))
                             Text("/ 4000 kcal")
-                                .fontWeight(.medium)
+                                .font(.callout)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         HStack {
                             Text("Glucides :")
-                                .fontWeight(.medium)
+                                .font(.callout)
                             Text("2500")
-                                .fontWeight(.medium)
+                                .font(.callout)
                                 .foregroundColor(Color(red: 0.7, green: 0.0, blue: 0.0))
                             Text("/ 1000 g")
-                                .fontWeight(.medium)
+                                .font(.callout)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         HStack {
                             Text("Lipides :")
-                                .fontWeight(.medium)
+                                .font(.callout)
                             Text("1500")
-                                .fontWeight(.medium)
+                                .font(.callout)
                                 .foregroundColor(Color(red: 0.0, green: 0.5, blue: 0.0))
                             Text("/ 3000 g")
-                                .fontWeight(.medium)
+                                .font(.callout)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         HStack {
                             Text("Protéines :")
-                                .fontWeight(.medium)
+                                .font(.callout)
                             Text("36")
-                                .fontWeight(.medium)
+                                .font(.callout)
                                 .foregroundColor(Color(red: 0.0, green: 0.5, blue: 0.0))
                             Text("/ 100 g")
-                                .fontWeight(.medium)
+                                .font(.callout)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         HStack {
                             Text("AG monoinsaturés :")
-                                .fontWeight(.medium)
+                                .font(.callout)
                             Text("1,3")
-                                .fontWeight(.medium)
+                                .font(.callout)
                                 .foregroundColor(Color(red: 0.7, green: 0.0, blue: 0.0))
                             Text("/ 3 mg")
-                                .fontWeight(.medium)
+                                .font(.callout)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }

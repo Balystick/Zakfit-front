@@ -14,8 +14,8 @@ struct ZakFit_frontApp: App {
     init() {
         // TabBar
         let tabBarAppearance = UITabBarAppearance()
-        tabBarAppearance.stackedLayoutAppearance.selected.iconColor = UIColor.orange
-        tabBarAppearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor.orange]
+        tabBarAppearance.stackedLayoutAppearance.selected.iconColor = UIColor(named: "customOrange")
+        tabBarAppearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor(named: "customOrange") ?? UIColor.orange]
         tabBarAppearance.stackedLayoutAppearance.normal.iconColor = UIColor.darkGray
         tabBarAppearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.darkGray]
         tabBarAppearance.backgroundColor = UIColor.systemGray6
@@ -24,7 +24,7 @@ struct ZakFit_frontApp: App {
         UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
         // Picker
         let appearancePicker = UISegmentedControl.appearance()
-        appearancePicker.selectedSegmentTintColor = UIColor.orange
+        appearancePicker.selectedSegmentTintColor = UIColor(named: "customOrange")
         appearancePicker.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
         appearancePicker.setTitleTextAttributes([.foregroundColor: UIColor.darkGray], for: .normal)
         // NavigationTitle

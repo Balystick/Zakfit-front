@@ -44,10 +44,9 @@ struct UserAuthView: View {
                         TextField("Entrer votre email", text: $viewModel.email)
                             .foregroundColor(Color(.darkGray))
                             .padding(10)
-                            .frame(width: 300)
                             .frame(maxWidth: .infinity)
                             .overlay {
-                                RoundedRectangle(cornerRadius: 8)
+                                RoundedRectangle(cornerRadius: 10)
                                     .stroke(Color(.darkGray), lineWidth: 1)
                             }
                             .keyboardType(.emailAddress)
@@ -60,10 +59,9 @@ struct UserAuthView: View {
                             .foregroundColor(Color(.darkGray))
                         SecureField("Entrer votre mot de passe", text: $viewModel.password)
                             .padding(10)
-                            .frame(width: 300)
                             .frame(maxWidth: .infinity)
                             .overlay {
-                                RoundedRectangle(cornerRadius: 8)
+                                RoundedRectangle(cornerRadius: 10)
                                     .stroke(Color(.darkGray), lineWidth: 1)
                             }
                     }
@@ -98,12 +96,12 @@ struct UserAuthView: View {
                         }
                     } label: {
                         Text("Se connecter")
+                            .fontWeight(.bold)
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .background(Color.orange)
+                            .background(Color("customOrange"))
                             .foregroundColor(.white)
-                            .fontWeight(.semibold)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                            .cornerRadius(10)
                             .padding(.trailing, 20)
                             .layoutPriority(1)
                     }

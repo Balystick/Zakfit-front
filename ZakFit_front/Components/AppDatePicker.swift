@@ -26,7 +26,7 @@ struct AppDatePicker: View {
                 displayedComponents: components
             )
             .labelsHidden()
-            .tint(.orange)
+            .tint(Color("customOrange"))
         }
         .padding(.vertical, 5)
     }

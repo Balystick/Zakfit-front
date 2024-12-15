@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @StateObject private var viewModel = ProfileViewModel()
+    @EnvironmentObject var authViewModel: AuthViewModel
+    @StateObject private var profileViewModel = ProfileViewModel()
 
     var body: some View {
         NavigationView {
@@ -38,12 +39,15 @@ struct ProfileView: View {
                     }
                     
                     Button(action: {
+                        KeychainManager.deleteTokenFromKeychain()
+                        authViewModel.isAuthenticated = false
+                        authViewModel.currentUser = nil
                     }) {
                         Text("Déconnexion")
                             .fontWeight(.bold)
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .background(Color.orange)
+                            .background(Color("customOrange"))
                             .foregroundColor(.white)
                             .cornerRadius(10)
                     }
@@ -54,11 +58,11 @@ struct ProfileView: View {
             .navigationTitle("Profile & objectifs")
             .foregroundColor(Color(UIColor.darkGray))
             .onAppear {
-                viewModel.loadProfile()
+                profileViewModel.loadProfile()
             }
         }
-        .environmentObject(viewModel)
-        .tint(.orange)
+        .environmentObject(profileViewModel)
+        .tint(Color("customOrange"))
     }
 }
 

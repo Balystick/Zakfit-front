@@ -14,7 +14,7 @@ struct AppLink<Destination: View>: View {
     var body: some View {
         NavigationLink(destination: destination) {
             Text(label)
-                .foregroundColor(.orange)
+                .foregroundColor(Color("customOrange"))
         }
     }
 }

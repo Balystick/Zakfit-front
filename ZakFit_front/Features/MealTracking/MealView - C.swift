@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct MealDetailView: View {
+struct MealView: View {
     let source: String
     
     var body: some View {
@@ -15,7 +15,7 @@ struct MealDetailView: View {
             VStack(spacing: 20) {
                 AppSection(
                     title: "Détail du repas") {
-                        MealTypeDateTimeView()
+                        MealDescView()
                     }
                 AppSection(
                     title: "Liste des aliments") {

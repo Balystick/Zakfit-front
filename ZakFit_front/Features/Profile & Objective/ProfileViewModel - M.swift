@@ -16,7 +16,7 @@ class ProfileViewModel: ObservableObject {
     @Published var sexe: String = "Homme"
     let sexeOptions = [ "Homme", "Femme" ]
     @Published var dateOfBirth: Date? = nil
-    @Published var height: Float? = nil
+    @Published var height: Float = 1.80
     @Published var weight: Float = 75.0
     
     // Notifications

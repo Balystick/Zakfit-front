@@ -37,7 +37,7 @@ struct AppSlider: View {
                 ),
                 in: 0...1 // Le slider est toujours sur une échelle de 0 à 1 pour l'exponentielle
             )
-            .tint(.orange) // Couleur du slider
+            .tint(Color("customOrange")) // Couleur du slider
         }
         .padding(.vertical, 5)
     }

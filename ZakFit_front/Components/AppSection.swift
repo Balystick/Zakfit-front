@@ -20,7 +20,7 @@ struct AppSection<Content: View>: View {
         VStack(alignment: .leading, spacing: 10) {
             Text(title)
                 .font(.headline)
-                .foregroundColor(.orange)
+                .foregroundColor(Color("customOrange"))
             content
                 .padding()
                 .background(Color(UIColor.systemGray6))

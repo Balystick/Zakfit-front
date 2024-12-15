@@ -15,7 +15,8 @@ struct FoodListView: View {
                     label: "Nouvel aliment",
                     value: "Ajouter",
                     destination: {
-                        AddFoodView() }
+                        FoodView(source: "")
+                    }
                 )
                 Divider()
                 AppFieldWithPush(
@@ -23,7 +24,8 @@ struct FoodListView: View {
                     value: 200,
                     unit: "g",
                     destination: { label in
-                        FoodDetailView(source: label) }
+                        FoodView(source: label)
+                    }
                 )
                 Divider()
                 AppFieldWithPush(
@@ -31,7 +33,8 @@ struct FoodListView: View {
                     value: 100,
                     unit: "g",
                     destination: { label in
-                        FoodDetailView(source: label) }
+                        FoodView(source: label)
+                    }
                 )
                 Divider()
                 AppFieldWithPush(
@@ -39,7 +42,7 @@ struct FoodListView: View {
                     value: 75,
                     unit: "g",
                     destination: { label in
-                        FoodDetailView(source: label) }
+                        FoodView(source: label) }
                 )
                 Divider()
                 AppFieldWithPush(
@@ -47,7 +50,7 @@ struct FoodListView: View {
                     value: 24,
                     unit: "g",
                     destination: { label in
-                        FoodDetailView(source: label) }
+                        FoodView(source: label) }
                 )
                 Divider()
                 AppFieldWithPush(
@@ -55,7 +58,7 @@ struct FoodListView: View {
                     value: 150,
                     unit: "g",
                     destination: { label in
-                        FoodDetailView(source: label) }
+                        FoodView(source: label) }
                 )
                 Divider()
                 AppFieldWithPush(
@@ -63,7 +66,7 @@ struct FoodListView: View {
                     value: "60",
                     unit: "g",
                     destination: { label in
-                        FoodDetailView(source: label) }
+                        FoodView(source: label) }
                 )
             }
             .foregroundColor(Color(UIColor.darkGray))

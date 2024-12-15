@@ -8,17 +8,17 @@
 import SwiftUI
 
 struct NotificationsView: View {
-    @EnvironmentObject var viewModel: ProfileViewModel
+    @EnvironmentObject var profileViewModel: ProfileViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Toggle("Activer les rappels", isOn: $viewModel.isReminderEnabled)
+            Toggle("Activer les rappels", isOn: $profileViewModel.isReminderEnabled)
                 .fontWeight(.medium)
             Divider()
             AppMenu(
                 label: "Type de rappels",
-                options: viewModel.recurrenceOptions,
-                selectedOption: $viewModel.selectedRecurrence
+                options: profileViewModel.recurrenceOptions,
+                selectedOption: $profileViewModel.selectedRecurrence
             )
         }
     }

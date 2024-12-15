@@ -16,13 +16,12 @@ struct FoodPreferencesView: View {
                     .fontWeight(.medium)
                 Spacer()
                 Text("Végétarien")
-                    .foregroundColor(.gray)
             }
             Divider()
             Button(action: {
             }) {
                 Text("Modifier les préférences alimentaires")
-                    .foregroundColor(.orange)
+                    .foregroundColor(Color("customOrange"))
             }
         }
     }

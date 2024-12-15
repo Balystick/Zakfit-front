@@ -7,18 +7,23 @@
 
 import SwiftUI
 
-struct AppField: View {
+struct AppField<T: LosslessStringConvertible>: View {
     let label: String
-    let value: String
-    
+    let value: T
+    let unit: String?
+
     var body: some View {
         HStack {
             Text(label)
                 .fontWeight(.medium)
-                .foregroundColor(.black)
             Spacer()
-            Text(value)
-                .foregroundColor(.gray)
+            HStack(spacing: 5) {
+                Text("\(value)")
+                if let unit = unit {
+                    Text(unit)
+                        .font(.footnote)
+                }
+            }
         }
         .padding(.vertical, 5)
     }

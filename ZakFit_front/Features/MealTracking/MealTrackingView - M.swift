@@ -19,7 +19,7 @@ struct MealTrackingView: View {
                             MonitoringPeriodView()
                         }
                         AppSection(title: "Repas") {
-                            MealView()
+                            MealListView()
                         }
                     }
                     Color.clear
@@ -31,7 +31,7 @@ struct MealTrackingView: View {
             .navigationTitle("Suivi des repas")
         }
         .environmentObject(viewModel)
-        .tint(.orange)
+        .tint(Color("customOrange"))
     }
 }
 

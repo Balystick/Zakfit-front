@@ -13,7 +13,7 @@ struct EditPasswordView: View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Modification du mot de passe")
                 .font(.headline)
-                .foregroundColor(.orange)
+                .foregroundColor(Color("customOrange"))
         }
     }
         

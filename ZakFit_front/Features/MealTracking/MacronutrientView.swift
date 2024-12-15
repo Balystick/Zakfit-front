@@ -1,13 +1,13 @@
 //
-//  FoodDetailView.swift
+//  MacronutrientView.swift
 //  ZakFit_front
 //
-//  Created by Aurélien on 14/12/2024.
+//  Created by Aurélien on 15/12/2024.
 //
 
 import SwiftUI
 
-struct FoodDetailView: View {
+struct MacronutrientView: View {
     let source: String
     
     var body: some View {

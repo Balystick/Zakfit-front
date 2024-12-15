@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct ActivityLevelView: View {
-    @EnvironmentObject var viewModel: ProfileViewModel
+    @EnvironmentObject var profileViewModel: ProfileViewModel
 
     var body: some View {
             AppPicker(
                 label: "Niveau d'activité",
-                options: viewModel.activityOptions,
-                selection: $viewModel.activityLevel
+                options: profileViewModel.activityOptions,
+                selection: $profileViewModel.activityLevel
             )
     }
 }

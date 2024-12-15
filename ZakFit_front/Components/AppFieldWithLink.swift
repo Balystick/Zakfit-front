@@ -19,7 +19,7 @@ struct AppFieldWithLink<Destination: View>: View {
                 Spacer()
             NavigationLink(destination: destination()) {
                 Text(value)
-                    .foregroundColor(.orange)
+                    .foregroundColor(Color("customOrange"))
                 }
         }
         .padding(.vertical, 5)

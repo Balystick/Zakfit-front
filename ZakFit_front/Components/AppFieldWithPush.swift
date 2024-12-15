@@ -18,17 +18,14 @@ struct AppFieldWithPush<T: LosslessStringConvertible, Destination: View>: View {
             HStack {
                 Text(label)
                     .fontWeight(.medium)
-                    .foregroundColor(Color(UIColor.darkGray))
                 
                 Spacer()
 
                 HStack {
                     Text("\(value)")
-                        .foregroundColor(.gray)
 
                     if let unit = unit {
                         Text(unit)
-                            .foregroundColor(.gray)
                     }
                 }
 

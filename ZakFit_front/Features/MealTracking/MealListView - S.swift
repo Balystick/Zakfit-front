@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct MealView: View {
+struct MealListView: View {
     
     var body: some View {
         ScrollView {
@@ -16,7 +16,7 @@ struct MealView: View {
                     label: "Nouveau repas",
                     value: "Ajouter",
                     destination: {
-                        AddMealView() }
+                        MealView(source: "") }
                 )
                 Divider()
                 AppFieldWithPush(
@@ -24,7 +24,7 @@ struct MealView: View {
                     value: "Petit-déjeuner",
                     unit: "",
                     destination: { label in
-                        MealDetailView(source: label) }
+                        MealView(source: label) }
                 )
                 Divider()
                 AppFieldWithPush(
@@ -32,7 +32,7 @@ struct MealView: View {
                     value: "Déjeuner",
                     unit: "",
                     destination: { label in
-                        MealDetailView(source: label) }
+                        MealView(source: label) }
                 )
                 Divider()
                 AppFieldWithPush(
@@ -40,7 +40,7 @@ struct MealView: View {
                     value: "Collation",
                     unit: "",
                     destination: { label in
-                        MealDetailView(source: label) }
+                        MealView(source: label) }
                 )
                 Divider()
                 AppFieldWithPush(
@@ -48,7 +48,7 @@ struct MealView: View {
                     value: "Dîner",
                     unit: "",
                     destination: { label in
-                        MealDetailView(source: label) }
+                        MealView(source: label) }
                 )
                 Divider()
                 AppFieldWithPush(
@@ -56,7 +56,7 @@ struct MealView: View {
                     value: "Petit-déjeuner",
                     unit: "",
                     destination: { label in
-                        MealDetailView(source: label) }
+                        MealView(source: label) }
                 )
                 Divider()
                 AppFieldWithPush(
@@ -64,7 +64,7 @@ struct MealView: View {
                     value: "Déjeuner",
                     unit: "",
                     destination: { label in
-                        MealDetailView(source: label) }
+                        MealView(source: label) }
                 )
             }
             .foregroundColor(Color(UIColor.darkGray))
