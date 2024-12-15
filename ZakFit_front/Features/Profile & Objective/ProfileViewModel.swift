@@ -5,8 +5,7 @@
 //  Created by Aurélien on 12/12/2024.
 //
 
-import SwiftUI
-import Combine
+import Foundation
 
 class ProfileViewModel: ObservableObject {
     @Published var isProfileLoaded: Bool = false

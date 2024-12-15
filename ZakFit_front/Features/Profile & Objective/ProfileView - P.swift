@@ -51,19 +51,14 @@ struct ProfileView: View {
                 }
                 .padding()
             }
-            .background(
-                LinearGradient(
-                    gradient: Gradient(colors: [Color.white, Color(UIColor.systemGray6)]),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-            )
-            .navigationTitle("Profil")
+            .navigationTitle("Profile & objectifs")
+            .foregroundColor(Color(UIColor.darkGray))
             .onAppear {
                 viewModel.loadProfile()
             }
         }
         .environmentObject(viewModel)
+        .tint(.orange)
     }
 }
 

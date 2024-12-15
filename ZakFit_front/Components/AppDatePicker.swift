@@ -10,6 +10,7 @@ import SwiftUI
 struct AppDatePicker: View {
     let label: String
     @Binding var date: Date?
+    let components: DatePickerComponents
 
     var body: some View {
         HStack {
@@ -22,7 +23,7 @@ struct AppDatePicker: View {
                     get: { date ?? Date() },
                     set: { date = $0 }
                 ),
-                displayedComponents: .date
+                displayedComponents: components
             )
             .labelsHidden()
             .tint(.orange)
@@ -31,5 +32,16 @@ struct AppDatePicker: View {
     }
 }
 
-// AppDatePicker(label: "", date: $viewModel.)
+//AppDatePicker(
+//    label: "Select Date",
+//    date: $selectedDate,
+//    components: .date
+//)
+
+//AppDatePicker(
+//    label: "Select Time",
+//    date: $selectedTime,
+//    components: .hourAndMinute
+//)
+
 

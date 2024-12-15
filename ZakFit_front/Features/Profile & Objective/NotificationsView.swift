@@ -9,7 +9,7 @@ import SwiftUI
 
 struct NotificationsView: View {
     @EnvironmentObject var viewModel: ProfileViewModel
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Toggle("Activer les rappels", isOn: $viewModel.isReminderEnabled)

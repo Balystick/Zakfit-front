@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct PersonalInfoView: View {
-    @EnvironmentObject var authViewModel: AuthViewModel
     @EnvironmentObject var viewModel: ProfileViewModel
 
     var body: some View {
@@ -26,7 +25,7 @@ struct PersonalInfoView: View {
                 options: viewModel.sexeOptions,
                 selectedOption: $viewModel.sexe
             )
-            AppDatePicker(label: "Date de naissance", date: $viewModel.dateOfBirth)
+            AppDatePicker(label: "Date de naissance", date: $viewModel.dateOfBirth, components: .date)
 //            AppField(label: "Taille", value: $viewModel.height != nil ? "\(viewModel.height!) cm" : "Non renseignée")
         }
     }

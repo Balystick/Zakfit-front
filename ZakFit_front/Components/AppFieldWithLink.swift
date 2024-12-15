@@ -16,7 +16,6 @@ struct AppFieldWithLink<Destination: View>: View {
         HStack {
                 Text(label)
                     .fontWeight(.medium)
-                    .foregroundColor(.black)
                 Spacer()
             NavigationLink(destination: destination()) {
                 Text(value)
@@ -27,4 +26,8 @@ struct AppFieldWithLink<Destination: View>: View {
     }
 }
 
-// AppFieldWithLink(label: "", value: "", destination: { View() })
+//AppFieldWithLink(
+//    label: "",
+//    value: "",
+//    destination: { View() }
+//)

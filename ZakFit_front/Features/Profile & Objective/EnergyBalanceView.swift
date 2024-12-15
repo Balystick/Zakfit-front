@@ -8,20 +8,19 @@
 import SwiftUI
 
 struct EnergyBalanceView: View {
-    @EnvironmentObject var viewModel: ProfileViewModel
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             AppFieldWithPush(
                 label: "Objectif de consommation",
-                value: $viewModel.weight,
+                value: "70",
                 unit: "kcal",
                 destination: { label in
                 WeightEditView(source: label) })
             Divider()
             AppFieldWithPush(
                 label: "Objectif de dépense",
-                value: $viewModel.weight,
+                value: "2500",
                 unit: "kcal",
                 destination: { label in
                 WeightEditView(source: label) })
@@ -29,6 +28,3 @@ struct EnergyBalanceView: View {
     }
 }
 
-#Preview {
-    EnergyBalanceView()
-}

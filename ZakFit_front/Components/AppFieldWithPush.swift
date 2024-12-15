@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AppFieldWithPush<T: LosslessStringConvertible, Destination: View>: View {
     let label: String
-    @Binding var value: T
+    let value: T
     let unit: String?
     let destination: (String) -> Destination
 
@@ -18,8 +18,8 @@ struct AppFieldWithPush<T: LosslessStringConvertible, Destination: View>: View {
             HStack {
                 Text(label)
                     .fontWeight(.medium)
-                    .foregroundColor(.black)
-
+                    .foregroundColor(Color(UIColor.darkGray))
+                
                 Spacer()
 
                 HStack {
@@ -41,5 +41,12 @@ struct AppFieldWithPush<T: LosslessStringConvertible, Destination: View>: View {
     }
 }
 
-// AppFieldWithPush(label: "", value: "", unit: "", destination: { View() })
+//AppFieldWithPush(
+//    label: "",
+//    value: ,
+//    unit: "",
+//    destination: { label in
+//        WeightEditView(label: label, )
+//    }
+//)
 

@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct EditPasswordView: View {
-    @EnvironmentObject var viewModel: ProfileViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
