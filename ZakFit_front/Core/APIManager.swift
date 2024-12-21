@@ -53,12 +53,18 @@ class APIManager {
             
             latestErrorResponseData = nil
             
+            if data.isEmpty, responseType == EmptyBody.self {
+                return EmptyBody() as! T
+            }
+            
             do {
-                let decodedResponse = try JSONDecoder().decode(responseType, from: data)
-                return decodedResponse
+                return try JSONDecoder().decode(responseType, from: data)
             } catch {
                 throw APIRequestError.decodingFailed
             }
+        } catch {
+            print("Caught error: \(error)")
+            throw error
         }
     }
 }
@@ -83,6 +89,21 @@ extension APIManager {
             method: "POST",
             body: userAuthRequestDTO,
             responseType: UserAuthResponseDTO.self
+        )
+    }
+    
+    func updatePassword(oldPassword: String, newPassword: String, confirmPassword: String) async throws {
+        let updatePasswordDTO = UpdatePasswordDTO(
+            oldPassword: oldPassword,
+            newPassword: newPassword,
+            confirmPassword: confirmPassword
+        )
+        
+        _ = try await sendRequest(
+            to: "http://127.0.0.1:8080/user/update-password",
+            method: "POST",
+            body: updatePasswordDTO,
+            responseType: EmptyBody.self
         )
     }
     

@@ -65,3 +65,11 @@ struct AppFieldWithEditString: View {
         .padding(.vertical, 6)
     }
 }
+//AppFieldWithEditString(
+//    label: "Prénom",
+//    value: $profileViewModel.user.firstName,
+//    unit: "",
+//    onValueChanged: {
+//        await profileViewModel.saveUserChanges()
+//    }
+//)

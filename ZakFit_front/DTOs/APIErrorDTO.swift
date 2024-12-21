@@ -1,8 +1,8 @@
 //
-//  APIErrorDTO.swift
+//  Untitled.swift
 //  ZakFit_front
 //
-//  Created by Aurélien on 10/12/2024.
+//  Created by Aurélien on 21/12/2024.
 //
 
 struct APIErrorDTO: Decodable {

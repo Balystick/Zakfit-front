@@ -43,7 +43,7 @@ struct PersonalInfoView: View {
                 label: "Mot de passe",
                 value: "Modifier",
                 destination: {
-                    EditPasswordView()
+                    UpdatePasswordView()
                 }
             )
             Divider()

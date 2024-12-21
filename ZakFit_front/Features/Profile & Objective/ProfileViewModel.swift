@@ -14,6 +14,10 @@ class ProfileViewModel: ObservableObject {
     @Published var tmp: Double = 0
     
     @Published var errorMessage: String?
+    @Published var successMessage: String? = nil
+    @Published var errorAlert: ErrorAlert?
+    
+
 
     let activityOptions = [
         "Sédentaire",
@@ -32,6 +36,11 @@ class ProfileViewModel: ObservableObject {
         "Toutes les 2 semaines",
         "Tous les mois"
     ]
+    // UpdatePassword
+    @Published var oldPassword: String = ""
+    @Published var newPassword: String = ""
+    @Published var confirmNewPassword: String = ""
+    
     // Weight
     @Published var weightPeriodOptions: [String] = ["7 jours", "Mois", "Année"]
     @Published var weightPeriod: String = "7 jours"
@@ -83,6 +92,32 @@ class ProfileViewModel: ObservableObject {
             DispatchQueue.main.async {
                 self.errorMessage = "Une erreur est survenue : \(error.localizedDescription)"
             }
+        }
+    }
+    
+    func updatePassword() async {
+        do {
+            try await APIManager.shared.updatePassword(
+                oldPassword: self.oldPassword,
+                newPassword: self.newPassword,
+                confirmPassword: self.confirmNewPassword
+            )
+            
+            DispatchQueue.main.async {
+                self.oldPassword = ""
+                self.newPassword = ""
+                self.confirmNewPassword = ""
+                self.successMessage = "Votre mot de passe a été mis à jour avec succès."
+                self.errorAlert = nil
+            }
+        } catch {
+            setError("Une erreur inattendue est survenue. Veuillez réessayer.")
+        }
+    }
+    
+    private func setError(_ message: String) {
+        DispatchQueue.main.async {
+            self.errorAlert = ErrorAlert(message: message)
         }
     }
 
