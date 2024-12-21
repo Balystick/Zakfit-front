@@ -11,10 +11,10 @@ struct AppFieldWithPush<T: LosslessStringConvertible, Destination: View>: View {
     let label: String
     @Binding var value: T
     let unit: String?
-    let destination: (String) -> Destination
-
+    let destination: Destination
+    
     var body: some View {
-        NavigationLink(destination: destination(label)) {
+        NavigationLink(destination: destination) {
             HStack {
                 Text(label)
                     .fontWeight(.medium)

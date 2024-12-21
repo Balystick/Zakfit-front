@@ -28,6 +28,9 @@ struct AppFieldWithEditDouble: View {
     var body: some View {
         HStack {
             if isEditing {
+                Text(label)
+                    .fontWeight(.medium)
+                Spacer()
                 TextField("Entrez une valeur", text: $temporaryValue, onCommit: {
                     if let newValue = Double(temporaryValue) {
                         value = newValue
@@ -39,9 +42,12 @@ struct AppFieldWithEditDouble: View {
                     }
                     isEditing = false
                 })
-                .padding(12)
+                .padding(8)
                 .background(Color.white)
                 .cornerRadius(8)
+                if let unit = unit {
+                    Text(unit)
+                }
             } else {
                 Text(label)
                     .fontWeight(.medium)
@@ -57,6 +63,7 @@ struct AppFieldWithEditDouble: View {
                 }
             }
         }
+        .padding(.vertical, 4)
         .onAppear {
             if startEditing == true {
                 isEditing = true

@@ -16,18 +16,14 @@ struct WeightPushView: View {
                 label: "Poids actuel",
                 value: $profileViewModel.lastUserWeight.weightValue,
                 unit: "kg",
-                destination: { label in
-                    WeightDescView()
-                }
+                destination: WeightDescView()
             )
             Divider()
             AppFieldWithPush(
                 label: "Poids cible",
                 value: $profileViewModel.lastUserWeight.weightValue,
                 unit: "kg",
-                destination: { label in
-                    GoalsView(source: label)
-                }
+                destination: GoalsView()
             )
         }
     }

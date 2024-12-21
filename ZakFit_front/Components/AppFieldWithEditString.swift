@@ -36,7 +36,7 @@ struct AppFieldWithEditString: View {
                     }
                     isEditing = false
                 })
-                .padding(12)
+                .padding(8)
                 .background(Color.white)
                 .cornerRadius(10)
 
@@ -62,6 +62,6 @@ struct AppFieldWithEditString: View {
                 }
             }
         }
-        .padding(.vertical, 5)
+        .padding(.vertical, 6)
     }
 }

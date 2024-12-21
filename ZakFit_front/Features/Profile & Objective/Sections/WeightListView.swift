@@ -10,41 +10,83 @@ import SwiftUI
 struct WeightListView: View {
     @EnvironmentObject var profileViewModel: ProfileViewModel
     @State private var editingWeightID: UUID? = nil
+    @State private var swipedWeightID: UUID? = nil
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 10) {
-                ForEach($profileViewModel.userWeights) { $weight in
-                    VStack {
-                        if editingWeightID == weight.id {
-                            AppFieldWithEditDouble(
-                                label: profileViewModel.formatDate(weight.dateTime),
-                                value: $weight.weightValue,
-                                unit: "kg",
-                                startEditing: true,
-                                onValueChanged: {
-                                    await profileViewModel.updateUserWeight(
-                                        id: weight.id,
-                                        dateTime: ISO8601DateFormatter().date(from: weight.dateTime) ?? Date(),
-                                        weightValue: weight.weightValue
-                                    )
-                                    editingWeightID = nil
+            VStack(alignment: .leading, spacing: 0) {
+                ForEach($profileViewModel.userWeights, id: \.id) { $weight in
+                    ZStack {
+                        HStack {
+                            Spacer()
+                            Button() {
+                                Task {
+                                    await profileViewModel.deleteUserWeight(id: weight.id)
+                                    swipedWeightID = nil
                                 }
-                            )
-                        } else {
-                            HStack {
-                                Text(profileViewModel.formatDate(weight.dateTime))
-                                    .fontWeight(.medium)
+                            } label: {
                                 Spacer()
-                                Text("\(weight.weightValue, specifier: "%.2f") kg")
+                                Text("Supprimer")
+                                    .foregroundColor(Color.white)
+                                    .padding(.vertical, 12)
+                                    .padding(.trailing, 10)
                             }
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                editingWeightID = weight.id
+                            .cornerRadius(10)
+
+                        }
+                        .background(.red)
+
+                        HStack {
+                            if editingWeightID == weight.id {
+                                AppFieldWithEditDouble(
+                                    label: profileViewModel.formatDate(weight.dateTime),
+                                    value: $weight.weightValue,
+                                    unit: "kg",
+                                    startEditing: true,
+                                    onValueChanged: {
+                                        await profileViewModel.updateUserWeight(
+                                            id: weight.id,
+                                            dateTime: ISO8601DateFormatter().date(from: weight.dateTime) ?? Date(),
+                                            weightValue: weight.weightValue
+                                        )
+                                        editingWeightID = nil
+                                    }
+                                )
+                                .padding(.vertical, 10)
+                            }
+                            else {
+                                HStack {
+                                    Text(profileViewModel.formatDate(weight.dateTime))
+                                        .fontWeight(.medium)
+                                    Spacer()
+                                    Text("\(String(format: "%.2f", locale: Locale(identifier: "en_US"), weight.weightValue)) kg")
+                                        .padding(.vertical, 12)
+                                }
+                                .onTapGesture {
+                                    editingWeightID = weight.id
+                                }
                             }
                         }
+                        .background(Color(UIColor.systemGray6))
+                        .offset(x: swipedWeightID == weight.id ? -100 : 0)
+                        .animation(.spring(), value: swipedWeightID) 
+                        .gesture(
+                            DragGesture()
+                                .onChanged { value in
+                                    if value.translation.width < -50 {
+                                        swipedWeightID = weight.id
+                                    }
+                                }
+                                .onEnded { value in
+                                    if value.translation.width > -50 {
+                                        swipedWeightID = nil
+                                    }
+                                }
+                        )
                     }
-                    Divider()
+                    if weight.id != profileViewModel.userWeights.last?.id {
+                        Divider()
+                    }
                 }
             }
         }

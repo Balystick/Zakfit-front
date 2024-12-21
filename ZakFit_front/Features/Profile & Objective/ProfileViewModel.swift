@@ -10,7 +10,9 @@ import SwiftUI
 class ProfileViewModel: ObservableObject {
     private let authViewModel: AuthViewModel
     @Published var user: User = User()
+    // tmp
     @Published var tmp: Double = 0
+    
     @Published var errorMessage: String?
 
     let activityOptions = [
@@ -20,6 +22,22 @@ class ProfileViewModel: ObservableObject {
         "Très actif"
     ]
     let sexeOptions = [ "Homme", "Femme", "Non renseigné" ]
+    // Notifications
+    @Published var isReminderEnabled: Bool = true
+    @Published var selectedRecurrence: String = "Jamais"
+    let recurrenceOptions = [
+        "Jamais",
+        "Tous les jours",
+        "Toutes les semaines",
+        "Toutes les 2 semaines",
+        "Tous les mois"
+    ]
+    // Weight
+    @Published var weightPeriodOptions: [String] = ["7 jours", "Mois", "Année"]
+    @Published var weightPeriod: String = "7 jours"
+    @Published var lastUserWeight: UserWeight = UserWeight()
+    @Published var userWeights: [UserWeight] = []
+    @Published var averageWeights: [(date: Date, average: Double)] = []
     
         init(authViewModel: AuthViewModel) {
             self.authViewModel = authViewModel
@@ -68,13 +86,7 @@ class ProfileViewModel: ObservableObject {
         }
     }
 
-    // Poids
-    @Published var weightPeriodOptions: [String] = ["Semaine", "Mois", "Année"]
-    @Published var weightPeriod: String = "Semaine"
-    @Published var lastUserWeight: UserWeight = UserWeight()
-    @Published var userWeights: [UserWeight] = []
-    @Published var averageWeights: [(date: Date, average: Double)] = []
-
+    // Weight
     func fetchLastUserWeight() async {
         do {
             let responseDTO = try await APIManager.shared.getLastUserWeight()
@@ -198,7 +210,7 @@ class ProfileViewModel: ObservableObject {
         let now = Date()
         
         switch weightPeriod {
-        case "Semaine":
+        case "7 jours":
             let startDate = calendar.date(byAdding: .day, value: -7, to: now) ?? now
             return (startDate, now)
         case "Mois":
@@ -217,7 +229,7 @@ class ProfileViewModel: ObservableObject {
         var groupedWeights: [[UserWeight]] = []
 
         switch weightPeriod {
-        case "Semaine":
+        case "7 jours":
             groupedWeights = Dictionary(grouping: userWeights) { weight in
                 let date = ISO8601DateFormatter().date(from: weight.dateTime) ?? Date()
                 return calendar.startOfDay(for: date)
@@ -269,7 +281,7 @@ class ProfileViewModel: ObservableObject {
         }
     }
     
-    // À déplacer dans un sharedViewModel ?
+    // Move to sharedViewModel ?
     func formatDate(_ isoDateString: String) -> String {
         let isoFormatter = ISO8601DateFormatter()
         let dateFormatter = DateFormatter()
@@ -282,15 +294,5 @@ class ProfileViewModel: ObservableObject {
         return "Date invalide"
     }
     
-    // Notifications
-    @Published var isReminderEnabled: Bool = true
-    @Published var selectedRecurrence: String = "Jamais"
-    
-    let recurrenceOptions = [
-        "Jamais",
-        "Tous les jours",
-        "Toutes les semaines",
-        "Toutes les 2 semaines",
-        "Tous les mois"
-    ]
+
 }

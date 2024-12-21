@@ -51,7 +51,8 @@ struct ProfileView: View {
                 }
                 .padding()
             }
-            .navigationTitle("Profile & objectifs")
+            .navigationTitle("Profil & objectifs")
         }
+        .tint(Color("customOrange"))
     }
 }

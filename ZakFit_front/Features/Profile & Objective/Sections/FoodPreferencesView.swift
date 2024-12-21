@@ -8,15 +8,17 @@
 import SwiftUI
 
 struct FoodPreferencesView: View {
-
+    @EnvironmentObject var profileViewModel: ProfileViewModel
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                Text("Type de régime")
-                    .fontWeight(.medium)
-                Spacer()
-                Text("Végétarien")
-            }
+            AppFieldWithLink(
+                label: "Type de régime",
+                value: "Végétarien",
+                destination: {
+                    GoalsView()
+                }
+            )
             Divider()
             Button(action: {
             }) {

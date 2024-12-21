@@ -43,7 +43,7 @@ struct UserAuthView: View {
                             .foregroundColor(Color(.darkGray))
                         TextField("Entrer votre email", text: $userAuthViewModel.email)
                             .foregroundColor(Color(.darkGray))
-                            .padding(10)
+                            .padding(13)
                             .frame(maxWidth: .infinity)
                             .overlay {
                                 RoundedRectangle(cornerRadius: 10)
@@ -58,7 +58,7 @@ struct UserAuthView: View {
                             .fontWeight(.semibold)
                             .foregroundColor(Color(.darkGray))
                         SecureField("Entrer votre mot de passe", text: $userAuthViewModel.password)
-                            .padding(10)
+                            .padding(13)
                             .frame(maxWidth: .infinity)
                             .overlay {
                                 RoundedRectangle(cornerRadius: 10)

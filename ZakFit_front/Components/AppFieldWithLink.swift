@@ -22,7 +22,7 @@ struct AppFieldWithLink<Destination: View>: View {
                     .foregroundColor(Color("customOrange"))
                 }
         }
-        .padding(.vertical, 5)
+        .padding(.vertical, 6)
     }
 }
 

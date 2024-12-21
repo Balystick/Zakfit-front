@@ -22,7 +22,7 @@ struct WeightDescView: View {
                 AppSection(title: "Moyenne par période") {
                     WeightChartView()
                 }
-                AppSection(title: "Poids") {
+                AppSection(title: "Toutes les données de la période") {
                     WeightListView()
                 }
             }

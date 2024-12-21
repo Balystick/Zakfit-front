@@ -43,7 +43,7 @@ struct AppDatePicker: View {
                 updateBindingFromLocalDate()
             }
         }
-        .padding(.vertical, 5)
+        .padding(.vertical, 1)
         .onAppear {
             syncBindingToLocalDate()
         }

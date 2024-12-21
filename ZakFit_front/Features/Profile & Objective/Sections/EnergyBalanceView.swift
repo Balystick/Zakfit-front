@@ -16,15 +16,15 @@ struct EnergyBalanceView: View {
                 label: "Objectif de consommation",
                 value: $profileViewModel.tmp,
                 unit: "kcal",
-                destination: { label in
-                GoalsView(source: label) })
+                destination: GoalsView()
+            )
             Divider()
             AppFieldWithPush(
                 label: "Objectif de dépense",
                 value: $profileViewModel.tmp,
                 unit: "kcal",
-                destination: { label in
-                GoalsView(source: label) })
+                destination: GoalsView()
+            )
         }
     }
 }

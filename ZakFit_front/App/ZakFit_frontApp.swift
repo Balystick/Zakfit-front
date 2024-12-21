@@ -12,6 +12,14 @@ struct ZakFit_frontApp: App {
     @StateObject private var authViewModel = AuthViewModel()
     
     init() {
+        // Navigation
+        let navigationAppearance = UINavigationBarAppearance()
+        navigationAppearance.titleTextAttributes = [.foregroundColor: UIColor.darkGray]
+        navigationAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor.darkGray]
+        navigationAppearance.backgroundColor = UIColor.white
+        UINavigationBar.appearance().standardAppearance = navigationAppearance
+        UINavigationBar.appearance().scrollEdgeAppearance = navigationAppearance
+        UINavigationBar.appearance().compactAppearance = navigationAppearance
         // TabBar
         let tabBarAppearance = UITabBarAppearance()
         tabBarAppearance.stackedLayoutAppearance.selected.iconColor = UIColor(named: "customOrange")
@@ -22,22 +30,14 @@ struct ZakFit_frontApp: App {
         UITabBar.appearance().standardAppearance = tabBarAppearance
         UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
         // SegmentedPicker
-        let appearancePicker = UISegmentedControl.appearance()
-        appearancePicker.selectedSegmentTintColor = UIColor(named: "customOrange")
-        appearancePicker.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
-        appearancePicker.setTitleTextAttributes([.foregroundColor: UIColor.darkGray], for: .normal)
+        let segmentedPickerAppearance = UISegmentedControl.appearance()
+        segmentedPickerAppearance.selectedSegmentTintColor = UIColor(named: "customOrange")
+        segmentedPickerAppearance.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
+        segmentedPickerAppearance.setTitleTextAttributes([.foregroundColor: UIColor.darkGray], for: .normal)
         // DatePicker
         UIDatePicker.appearance().tintColor = UIColor(named: "customOrange")
         // Toggle
         UISwitch.appearance().onTintColor = UIColor(named: "customOrange")
-        // NavigationTitle
-        let NavTitleAppearance = UINavigationBarAppearance()
-        NavTitleAppearance.titleTextAttributes = [.foregroundColor: UIColor.darkGray]
-        NavTitleAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor.darkGray]
-        NavTitleAppearance.backgroundColor = UIColor.white
-        UINavigationBar.appearance().standardAppearance = NavTitleAppearance
-        UINavigationBar.appearance().scrollEdgeAppearance = NavTitleAppearance
-        UINavigationBar.appearance().compactAppearance = NavTitleAppearance
     }
     
     var body: some Scene {
