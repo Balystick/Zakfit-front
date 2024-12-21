@@ -24,6 +24,9 @@ class ProfileViewModel: ObservableObject {
         init(authViewModel: AuthViewModel) {
             self.authViewModel = authViewModel
             updateUserFromAuth()
+            Task {
+                await fetchLastUserWeight()
+            }
         }
     
     func updateUserFromAuth() {
@@ -101,7 +104,7 @@ class ProfileViewModel: ObservableObject {
             )
             
             let sortedWeights = responseDTOs.map { $0.toModel() }
-                .sorted { $0.dateTime < $1.dateTime }
+                .sorted { $0.dateTime > $1.dateTime }
             
             DispatchQueue.main.async {
                 self.userWeights = sortedWeights
@@ -134,7 +137,8 @@ class ProfileViewModel: ObservableObject {
             DispatchQueue.main.async {
                 self.lastUserWeight = createdWeight
                 self.userWeights.append(createdWeight)
-                self.userWeights.sort { $0.dateTime < $1.dateTime }
+                self.userWeights.sort { $0.dateTime > $1.dateTime }
+                self.averageWeights = self.calculateAverages()
             }
         } catch {
             DispatchQueue.main.async {
@@ -161,7 +165,11 @@ class ProfileViewModel: ObservableObject {
             DispatchQueue.main.async {
                 if let index = self.userWeights.firstIndex(where: { $0.id == id }) {
                     self.userWeights[index] = updatedWeight
-                    self.userWeights.sort { $0.dateTime < $1.dateTime }
+                    self.userWeights.sort { $0.dateTime > $1.dateTime }
+                    if let mostRecentWeight = self.userWeights.first, mostRecentWeight.id == id {
+                        self.lastUserWeight = mostRecentWeight
+                    }
+                    self.averageWeights = self.calculateAverages()
                 }
             }
         } catch {
@@ -217,10 +225,13 @@ class ProfileViewModel: ObservableObject {
             .values.map { $0.sorted { $0.dateTime < $1.dateTime } }
 
         case "Mois":
+            let interval = 4
             groupedWeights = Dictionary(grouping: userWeights) { weight in
                 let date = ISO8601DateFormatter().date(from: weight.dateTime) ?? Date()
-                let dayInterval = calendar.component(.day, from: date) / 2 // Group every 2 days
-                return calendar.date(byAdding: .day, value: dayInterval * 2, to: calendar.startOfDay(for: date)) ?? Date()
+                let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: date)) ?? Date()
+                let daysSinceStart = calendar.dateComponents([.day], from: startOfMonth, to: date).day ?? 0
+                let intervalStart = daysSinceStart / interval * interval
+                return calendar.date(byAdding: .day, value: intervalStart, to: startOfMonth) ?? Date()
             }
             .values.map { $0.sorted { $0.dateTime < $1.dateTime } }
 

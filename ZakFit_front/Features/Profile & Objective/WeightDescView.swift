@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct WeightDescView: View {
+    @EnvironmentObject var profileViewModel: ProfileViewModel
     
     var body: some View {
         ScrollView {

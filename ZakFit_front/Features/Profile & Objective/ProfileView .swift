@@ -52,11 +52,6 @@ struct ProfileView: View {
                 .padding()
             }
             .navigationTitle("Profile & objectifs")
-            .onAppear {
-                Task {
-                    await profileViewModel.fetchLastUserWeight()
-                }
-            }
         }
     }
 }

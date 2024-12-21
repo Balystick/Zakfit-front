@@ -21,10 +21,5 @@ struct WeightEditView: View {
                 }
             )
         }
-        .onAppear {
-            Task {
-                await profileViewModel.fetchLastUserWeight()
-            }
-        }
     }
 }

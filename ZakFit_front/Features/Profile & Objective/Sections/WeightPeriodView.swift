@@ -18,7 +18,6 @@ struct WeightPeriodView: View {
                 selection: $profileViewModel.weightPeriod,
                 onValueChanged: {
                     await profileViewModel.fetchUserWeightsByPeriod()
-
                 }
             )
         }

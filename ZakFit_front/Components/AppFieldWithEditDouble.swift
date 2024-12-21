@@ -12,14 +12,15 @@ struct AppFieldWithEditDouble: View {
     @Binding var value: Double
     let unit: String?
     let onValueChanged: (() async -> Void)?
-    
     @State private var temporaryValue: String
     @State private var isEditing: Bool = false
+    let startEditing: Bool?
     
-    init(label: String, value: Binding<Double>, unit: String? = nil, onValueChanged: (() async -> Void)? = nil) {
+    init(label: String, value: Binding<Double>, unit: String? = nil, startEditing: Bool? = nil, onValueChanged: (() async -> Void)? = nil) {
         self.label = label
         self._value = value
         self.unit = unit
+        self.startEditing = startEditing
         self.onValueChanged = onValueChanged
         self._temporaryValue = State(initialValue: "\(value.wrappedValue)")
     }
@@ -56,7 +57,11 @@ struct AppFieldWithEditDouble: View {
                 }
             }
         }
-        .padding(.vertical, 5)
+        .onAppear {
+            if startEditing == true {
+                isEditing = true
+            }
+        }
     }
 }
 
