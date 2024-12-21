@@ -1,32 +1,45 @@
 //
-//  AppFieldWithEdit.swift
+//  AppDoubleFieldWithEdit.swift
 //  ZakFit_front
 //
-//  Created by Aurélien on 13/12/2024.
+//  Created by Aurélien on 19/12/2024.
 //
 
 import SwiftUI
 
-struct AppFieldWithEdit<T: LosslessStringConvertible>: View {
+struct AppFieldWithEditString: View {
     let label: String
-    @Binding var value: T
+    @Binding var value: String
     let unit: String?
-    @State private var temporaryValue: String = ""
+    let onValueChanged: (() async -> Void)?
+
+    @State private var temporaryValue: String
     @State private var isEditing: Bool = false
-    
+
+    init(label: String, value: Binding<String>, unit: String? = nil, onValueChanged: (() async -> Void)? = nil) {
+        self.label = label
+        self._value = value
+        self.unit = unit
+        self.onValueChanged = onValueChanged
+        self._temporaryValue = State(initialValue: value.wrappedValue)
+    }
+
     var body: some View {
         HStack {
             if isEditing {
                 TextField("", text: $temporaryValue, onCommit: {
-                    if let newValue = T(temporaryValue) {
-                        value = newValue
+                    value = temporaryValue
+                    if let onValueChanged = onValueChanged {
+                        Task {
+                            await onValueChanged()
+                        }
                     }
                     isEditing = false
                 })
                 .padding(12)
                 .background(Color.white)
                 .cornerRadius(10)
-                
+
                 if let unit = unit {
                     Text(unit)
                 }
@@ -35,9 +48,10 @@ struct AppFieldWithEdit<T: LosslessStringConvertible>: View {
                     .fontWeight(.medium)
                 Spacer()
                 HStack {
-                    Text("\(value)")
+                    Text(value)
+                        .foregroundColor(Color(UIColor.darkGray))
                         .onTapGesture {
-                            temporaryValue = "\(value)"
+                            temporaryValue = value
                             isEditing = true
                         }
                     if let unit = unit {
@@ -51,9 +65,3 @@ struct AppFieldWithEdit<T: LosslessStringConvertible>: View {
         .padding(.vertical, 5)
     }
 }
-
-//  AppFieldWithEdit(
-//    label: "",
-//    value: $viewModel.,
-//    unit: "kg")
-

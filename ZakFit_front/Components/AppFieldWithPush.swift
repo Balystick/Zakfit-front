@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AppFieldWithPush<T: LosslessStringConvertible, Destination: View>: View {
     let label: String
-    let value: T
+    @Binding var value: T
     let unit: String?
     let destination: (String) -> Destination
 
@@ -23,7 +23,6 @@ struct AppFieldWithPush<T: LosslessStringConvertible, Destination: View>: View {
 
                 HStack {
                     Text("\(value)")
-
                     if let unit = unit {
                         Text(unit)
                     }

@@ -10,7 +10,7 @@ import SwiftUI
 @main
 struct ZakFit_frontApp: App {
     @StateObject private var authViewModel = AuthViewModel()
-
+    
     init() {
         // TabBar
         let tabBarAppearance = UITabBarAppearance()
@@ -19,14 +19,17 @@ struct ZakFit_frontApp: App {
         tabBarAppearance.stackedLayoutAppearance.normal.iconColor = UIColor.darkGray
         tabBarAppearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.darkGray]
         tabBarAppearance.backgroundColor = UIColor.systemGray6
-//        tabBarAppearance.shadowColor = .clear
         UITabBar.appearance().standardAppearance = tabBarAppearance
         UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
-        // Picker
+        // SegmentedPicker
         let appearancePicker = UISegmentedControl.appearance()
         appearancePicker.selectedSegmentTintColor = UIColor(named: "customOrange")
         appearancePicker.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
         appearancePicker.setTitleTextAttributes([.foregroundColor: UIColor.darkGray], for: .normal)
+        // DatePicker
+        UIDatePicker.appearance().tintColor = UIColor(named: "customOrange")
+        // Toggle
+        UISwitch.appearance().onTintColor = UIColor(named: "customOrange")
         // NavigationTitle
         let NavTitleAppearance = UINavigationBarAppearance()
         NavTitleAppearance.titleTextAttributes = [.foregroundColor: UIColor.darkGray]

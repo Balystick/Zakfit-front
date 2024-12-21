@@ -11,7 +11,7 @@ struct UserAuthView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
     @State private var email: String = ""
     @State private var password: String = ""
-    @StateObject var viewModel = UserAuthViewModel()
+    @StateObject var userAuthViewModel = UserAuthViewModel()
     @State private var bounceEffect = false
     
     var body: some View {
@@ -41,7 +41,7 @@ struct UserAuthView: View {
                         Text("Email")
                             .fontWeight(.semibold)
                             .foregroundColor(Color(.darkGray))
-                        TextField("Entrer votre email", text: $viewModel.email)
+                        TextField("Entrer votre email", text: $userAuthViewModel.email)
                             .foregroundColor(Color(.darkGray))
                             .padding(10)
                             .frame(maxWidth: .infinity)
@@ -57,7 +57,7 @@ struct UserAuthView: View {
                         Text("Mot de passe")
                             .fontWeight(.semibold)
                             .foregroundColor(Color(.darkGray))
-                        SecureField("Entrer votre mot de passe", text: $viewModel.password)
+                        SecureField("Entrer votre mot de passe", text: $userAuthViewModel.password)
                             .padding(10)
                             .frame(maxWidth: .infinity)
                             .overlay {
@@ -73,7 +73,7 @@ struct UserAuthView: View {
                 HStack {
                     Button {
                         Task {
-                            await viewModel.registration(authViewModel: authViewModel)
+                            await userAuthViewModel.registration(authViewModel: authViewModel)
                         }
                     } label: {
                         Text("S'inscrire")
@@ -92,7 +92,7 @@ struct UserAuthView: View {
                 
                     Button {
                         Task {
-                            await viewModel.login(authViewModel: authViewModel)
+                            await userAuthViewModel.login(authViewModel: authViewModel)
                         }
                     } label: {
                         Text("Se connecter")
@@ -107,12 +107,12 @@ struct UserAuthView: View {
                     }
                 }
                                 
-                .alert(item: $viewModel.errorAlert) { errorAlert in
+                .alert(item: $userAuthViewModel.errorAlert) { errorAlert in
                     Alert(
                         title: Text("Erreur"),
                         message: Text(errorAlert.message),
                         dismissButton: .default(Text("OK"), action: {
-                            viewModel.errorAlert = nil
+                            userAuthViewModel.errorAlert = nil
                         })
                     )
                 }

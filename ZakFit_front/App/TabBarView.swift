@@ -15,6 +15,7 @@ enum Tab: String {
 }
 
 struct TabBarView: View {
+    @EnvironmentObject var authViewModel: AuthViewModel
     @State private var selectedTab: Tab = .dashboard
     
     var body: some View {
@@ -42,6 +43,7 @@ struct TabBarView: View {
                     .tag(Tab.activityTracking)
                 
                 ProfileView()
+                    .environmentObject(ProfileViewModel(authViewModel: authViewModel))
                     .tabItem {
                         Image(systemName: Tab.profile.rawValue)
                         Text("Profil")
@@ -107,7 +109,6 @@ struct TabBarView: View {
                     .padding(.horizontal)
                     .padding(.top, 5)
                     .padding(.bottom, 15)
-                    .foregroundColor(Color(UIColor.darkGray))
                     .background(Color(UIColor.systemGray6))
                     Color.clear.frame(height: 45)
                 } else {
@@ -121,6 +122,8 @@ struct TabBarView: View {
                 }
             }
         }
+        .foregroundColor(Color(UIColor.darkGray))
+//        .tint(Color("customOrange"))
     }
 }
 

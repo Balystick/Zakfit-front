@@ -12,10 +12,15 @@ struct NotificationsView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Toggle("Activer les rappels", isOn: $profileViewModel.isReminderEnabled)
-                .fontWeight(.medium)
+            AppToggle(
+                label: "Activer les rappels",
+                isOn: $profileViewModel.isReminderEnabled
+//                onValueChanged: {
+//                    await performAsyncAction()
+//                }
+            )
             Divider()
-            AppMenu(
+            AppMenuPicker(
                 label: "Type de rappels",
                 options: profileViewModel.recurrenceOptions,
                 selectedOption: $profileViewModel.selectedRecurrence

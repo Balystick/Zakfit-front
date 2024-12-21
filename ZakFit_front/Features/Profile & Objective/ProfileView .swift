@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @EnvironmentObject var profileViewModel: ProfileViewModel
     @EnvironmentObject var authViewModel: AuthViewModel
-    @StateObject private var profileViewModel = ProfileViewModel()
 
     var body: some View {
         NavigationView {
@@ -18,19 +18,15 @@ struct ProfileView: View {
                     AppSection(title: "Niveau d'activité physique") {
                         ActivityLevelView()
                     }
-                    
                     AppSection(title: "Poids") {
-                        WeightView()
+                        WeightPushView()
                     }
-                    
                     AppSection(title: "Bilan énergétique") {
                         EnergyBalanceView()
                     }
-                    
                     AppSection(title: "Préférences alimentaires") {
                         FoodPreferencesView()
                     }
-                    
                     AppSection(title: "Notifications et rappels") {
                         NotificationsView()
                     }
@@ -56,16 +52,11 @@ struct ProfileView: View {
                 .padding()
             }
             .navigationTitle("Profile & objectifs")
-            .foregroundColor(Color(UIColor.darkGray))
             .onAppear {
-                profileViewModel.loadProfile()
+                Task {
+                    await profileViewModel.fetchLastUserWeight()
+                }
             }
         }
-        .environmentObject(profileViewModel)
-        .tint(Color("customOrange"))
     }
-}
-
-#Preview {
-    ProfileView()
 }

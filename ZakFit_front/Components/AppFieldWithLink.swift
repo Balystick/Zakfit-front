@@ -27,7 +27,9 @@ struct AppFieldWithLink<Destination: View>: View {
 }
 
 //AppFieldWithLink(
-//    label: "",
-//    value: "",
-//    destination: { View() }
+//    label: "Mot de passe",
+//    value: "Modifier",
+//    destination: {
+//        EditPasswordView()
+//    }
 //)

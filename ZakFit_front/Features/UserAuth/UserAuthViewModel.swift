@@ -4,7 +4,6 @@
 //
 //  Created by Aurélien on 10/12/2024.
 //
-//
 
 import Foundation
 
@@ -15,17 +14,11 @@ class UserAuthViewModel: ObservableObject {
     
     func login(authViewModel: AuthViewModel) async {
         guard validateInputs() else { return }
-        
-        do {
-            let userAuthRequest = UserAuthRequest(email: email, password: password)
-            let userAuthResponse: UserAuthResponse = try await APIManager.shared.sendRequest(
-                to: "http://127.0.0.1:8080/users/login",
-                method: "POST",
-                body: userAuthRequest,
-                responseType: UserAuthResponse.self
-            )
 
+        do {
+            let userAuthResponse = try await APIManager.shared.loginUser(email: email, password: password)
             KeychainManager.saveTokenToKeychain(token: userAuthResponse.token)
+            
             DispatchQueue.main.async {
                 authViewModel.isAuthenticated = true
                 authViewModel.currentUser = userAuthResponse.user
@@ -38,26 +31,20 @@ class UserAuthViewModel: ObservableObject {
                 setError("Erreur serveur (\(statusCode)) : Une erreur est survenue.")
             }
         } catch {
-                setError(error.localizedDescription)
-            }
+            setError(error.localizedDescription)
         }
+    }
     
     func registration(authViewModel: AuthViewModel) async {
         guard validateInputs() else { return }
         
         do {
-            let userAuthRequest = UserAuthRequest(email: email, password: password)
-            let userAuthResponse: UserAuthResponse = try await APIManager.shared.sendRequest(
-                to: "http://127.0.0.1:8080/users/create",
-                method: "POST",
-                body: userAuthRequest,
-                responseType: UserAuthResponse.self
-            )
-
-            KeychainManager.saveTokenToKeychain(token: userAuthResponse.token)
+            let userAuthResponseDTO = try await APIManager.shared.registerUser(email: email, password: password)
+            KeychainManager.saveTokenToKeychain(token: userAuthResponseDTO.token)
+            
             DispatchQueue.main.async {
                 authViewModel.isAuthenticated = true
-                authViewModel.currentUser = userAuthResponse.user
+                authViewModel.currentUser = userAuthResponseDTO.user
             }
         } catch let APIRequestError.serverError(statusCode) {
             if let data = APIManager.shared.latestErrorResponseData {
@@ -67,9 +54,9 @@ class UserAuthViewModel: ObservableObject {
                 setError("Erreur serveur (\(statusCode)) : Une erreur est survenue.")
             }
         } catch {
-                setError(error.localizedDescription)
-            }
+            setError(error.localizedDescription)
         }
+    }
     
     private func validateInputs() -> Bool {
         var errors = [String]()
