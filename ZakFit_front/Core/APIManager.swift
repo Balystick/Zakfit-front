@@ -46,21 +46,37 @@ class APIManager {
         
         do {
             let (data, response) = try await URLSession.shared.data(for: request)
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                latestErrorResponseData = data
-                throw APIRequestError.serverError(statusCode: (response as? HTTPURLResponse)?.statusCode ?? 0)
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw APIRequestError.invalidResponse
             }
             
-            latestErrorResponseData = nil
+            latestErrorResponseData = data
             
-            if data.isEmpty, responseType == EmptyBody.self {
-                return EmptyBody() as! T
-            }
-            
-            do {
-                return try JSONDecoder().decode(responseType, from: data)
-            } catch {
-                throw APIRequestError.decodingFailed
+            switch httpResponse.statusCode {
+            case 200...299:
+                
+                if httpResponse.statusCode == 204 {
+                    if responseType == EmptyBody.self {
+                        return EmptyBody() as! T
+                    } else {
+                        throw APIRequestError.decodingFailed
+                    }
+                }
+                
+                if data.isEmpty, responseType == EmptyBody.self {
+                    return EmptyBody() as! T
+                }
+                
+                do {
+                    let decodedData = try JSONDecoder().decode(responseType, from: data)
+                    return decodedData
+                } catch {
+                    throw APIRequestError.decodingFailed
+                }
+                
+            default:
+                throw APIRequestError.serverError(statusCode: httpResponse.statusCode)
             }
         } catch {
             print("Caught error: \(error)")
@@ -92,6 +108,7 @@ extension APIManager {
         )
     }
     
+    // Update Password
     func updatePassword(oldPassword: String, newPassword: String, confirmPassword: String) async throws {
         let updatePasswordDTO = UpdatePasswordDTO(
             oldPassword: oldPassword,
@@ -177,20 +194,5 @@ extension APIManager {
             body: EmptyBody(),
             responseType: EmptyBody.self
         )
-    }
-    
-    func handleServerError(data: Data) -> String {
-        guard let serverMessage = try? JSONDecoder().decode(APIErrorDTO.self, from: data) else {
-            return "Une erreur est survenue. Veuillez vérifier vos informations."
-        }
-        
-        switch serverMessage.reason {
-        case "An account with this email already exists.":
-            return "Cette adresse e-mail est déjà associée à un compte. Veuillez utiliser une autre adresse ou vous connecter."
-        case "Invalid email or password.":
-            return "Impossible de se connecter, veuillez vérifier vos informations."
-        default:
-            return serverMessage.reason
-        }
     }
 }

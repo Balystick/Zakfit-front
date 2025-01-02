@@ -21,7 +21,6 @@ struct AppField<T: LosslessStringConvertible>: View {
                 Text("\(value)")
                 if let unit = unit {
                     Text(unit)
-                        .font(.footnote)
                 }
             }
         }

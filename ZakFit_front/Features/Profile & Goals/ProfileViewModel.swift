@@ -7,18 +7,15 @@
 
 import SwiftUI
 
-class ProfileViewModel: ObservableObject {
+class ProfileViewModel: ObservableObject, @unchecked Sendable {
     private let authViewModel: AuthViewModel
     @Published var user: User = User()
     // tmp
     @Published var tmp: Double = 0
     
-    @Published var errorMessage: String?
     @Published var successMessage: String? = nil
     @Published var errorAlert: ErrorAlert?
     
-
-
     let activityOptions = [
         "Sédentaire",
         "Modéré",
@@ -42,23 +39,20 @@ class ProfileViewModel: ObservableObject {
     @Published var confirmNewPassword: String = ""
     
     // Weight
-    @Published var weightPeriodOptions: [String] = ["7 jours", "Mois", "Année"]
-    @Published var weightPeriod: String = "7 jours"
     @Published var lastUserWeight: UserWeight = UserWeight()
     @Published var userWeights: [UserWeight] = []
-    @Published var averageWeights: [(date: Date, average: Double)] = []
     
-        init(authViewModel: AuthViewModel) {
-            self.authViewModel = authViewModel
-            updateUserFromAuth()
-            Task {
-                await fetchLastUserWeight()
-            }
+    init(authViewModel: AuthViewModel) {
+        self.authViewModel = authViewModel
+        updateUserFromAuth()
+        Task {
+            await self.fetchLastUserWeight()
         }
+    }
     
     func updateUserFromAuth() {
         guard let currentUser = authViewModel.currentUser else {
-            print("Erreur : currentUser est nil dans authViewModel")
+            print("Erreur dans updateUserFromAuth : currentUser est nil")
             return
         }
         self.user.firstName = currentUser.firstName
@@ -81,17 +75,15 @@ class ProfileViewModel: ObservableObject {
                 sexe: user.sexe,
                 activityLevel: user.activityLevel
             )
-
+            
             let updatedUserDTO = try await APIManager.shared.updateUser(userUpdate)
-
+            
             DispatchQueue.main.async {
                 self.user = updatedUserDTO.toModel()
                 self.authViewModel.currentUser = self.user
             }
         } catch {
-            DispatchQueue.main.async {
-                self.errorMessage = "Une erreur est survenue : \(error.localizedDescription)"
-            }
+            print("Erreur dans saveUserChanges : \(error.localizedDescription)")
         }
     }
     
@@ -110,17 +102,18 @@ class ProfileViewModel: ObservableObject {
                 self.successMessage = "Votre mot de passe a été mis à jour avec succès."
                 self.errorAlert = nil
             }
+        } catch let APIRequestError.serverError(statusCode) {
+            if let data = APIManager.shared.latestErrorResponseData,
+               let serverError = try? JSONDecoder().decode(APIErrorDTO.self, from: data) {
+                setError(serverError.reason)
+            } else {
+                setError("Erreur serveur (\(statusCode)) : Une erreur est survenue.")
+            }
         } catch {
             setError("Une erreur inattendue est survenue. Veuillez réessayer.")
         }
     }
     
-    private func setError(_ message: String) {
-        DispatchQueue.main.async {
-            self.errorAlert = ErrorAlert(message: message)
-        }
-    }
-
     // Weight
     func fetchLastUserWeight() async {
         do {
@@ -132,42 +125,27 @@ class ProfileViewModel: ObservableObject {
                 self.lastUserWeight = userWeight
             }
         } catch {
-            DispatchQueue.main.async {
-                self.errorMessage = "Erreur : \(error.localizedDescription)"
-            }
+            print("Erreur dans fetchLastUserWeight : \(error.localizedDescription)")
         }
     }
     
-    func fetchUserWeightsByPeriod() async {
-        let (startDate, endDate) = calculatePeriodDates()
+    func fetchAllUserWeights() async {
         do {
-            let isoFormatter = ISO8601DateFormatter()
-            let startDateString = isoFormatter.string(from: startDate)
-            let endDateString = isoFormatter.string(from: endDate)
-            
-            let responseDTOs = try await APIManager.shared.getUserWeightsByPeriod(
-                startDate: startDateString,
-                endDate: endDateString
-            )
-            
-            let sortedWeights = responseDTOs.map { $0.toModel() }
-                .sorted { $0.dateTime > $1.dateTime }
+            let responseDTO = try await APIManager.shared.getAllUserWeights()
             
             DispatchQueue.main.async {
-                self.userWeights = sortedWeights
-                self.averageWeights = self.calculateAverages()
+                self.userWeights = responseDTO.map { $0.toModel() }
+                    .sorted { $0.dateTime > $1.dateTime }
             }
         } catch {
-            DispatchQueue.main.async {
-                self.errorMessage = "Erreur : \(error.localizedDescription)"
-            }
+            print("Erreur dans fetchAllUserWeights : \(error.localizedDescription)")
         }
     }
     
     func createUserWeight() async {
         do {
             let weightValue = lastUserWeight.weightValue
-
+            
             let dateTime = Date()
             let isoFormatter = ISO8601DateFormatter()
             let dateTimeString = isoFormatter.string(from: dateTime)
@@ -185,12 +163,10 @@ class ProfileViewModel: ObservableObject {
                 self.lastUserWeight = createdWeight
                 self.userWeights.append(createdWeight)
                 self.userWeights.sort { $0.dateTime > $1.dateTime }
-                self.averageWeights = self.calculateAverages()
             }
         } catch {
-            DispatchQueue.main.async {
-                self.errorMessage = "Erreur : \(error.localizedDescription)"
-            }
+            print("Erreur dans createUserWeight : \(error.localizedDescription)")
+            
         }
     }
     
@@ -216,13 +192,10 @@ class ProfileViewModel: ObservableObject {
                     if let mostRecentWeight = self.userWeights.first, mostRecentWeight.id == id {
                         self.lastUserWeight = mostRecentWeight
                     }
-                    self.averageWeights = self.calculateAverages()
                 }
             }
         } catch {
-            DispatchQueue.main.async {
-                self.errorMessage = "Erreur : \(error.localizedDescription)"
-            }
+            print("Erreur dans updateUserWeight : \(error.localizedDescription)")
         }
     }
     
@@ -233,86 +206,9 @@ class ProfileViewModel: ObservableObject {
             DispatchQueue.main.async {
                 self.userWeights.removeAll { $0.id == id }
             }
+            await self.fetchLastUserWeight()
         } catch {
-            DispatchQueue.main.async {
-                self.errorMessage = "Erreur : \(error.localizedDescription)"
-            }
-        }
-    }
-    
-    func calculatePeriodDates() -> (startDate: Date, endDate: Date) {
-        let calendar = Calendar.current
-        let now = Date()
-        
-        switch weightPeriod {
-        case "7 jours":
-            let startDate = calendar.date(byAdding: .day, value: -7, to: now) ?? now
-            return (startDate, now)
-        case "Mois":
-            let startDate = calendar.date(byAdding: .month, value: -1, to: now) ?? now
-            return (startDate, now)
-        case "Année":
-            let startDate = calendar.date(byAdding: .year, value: -1, to: now) ?? now
-            return (startDate, now)
-        default:
-            return (now, now)
-        }
-    }
-    
-    func groupWeightsByPeriod() -> [[UserWeight]] {
-        let calendar = Calendar.current
-        var groupedWeights: [[UserWeight]] = []
-
-        switch weightPeriod {
-        case "7 jours":
-            groupedWeights = Dictionary(grouping: userWeights) { weight in
-                let date = ISO8601DateFormatter().date(from: weight.dateTime) ?? Date()
-                return calendar.startOfDay(for: date)
-            }
-            .values.map { $0.sorted { $0.dateTime < $1.dateTime } }
-
-        case "Mois":
-            let interval = 4
-            groupedWeights = Dictionary(grouping: userWeights) { weight in
-                let date = ISO8601DateFormatter().date(from: weight.dateTime) ?? Date()
-                let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: date)) ?? Date()
-                let daysSinceStart = calendar.dateComponents([.day], from: startOfMonth, to: date).day ?? 0
-                let intervalStart = daysSinceStart / interval * interval
-                return calendar.date(byAdding: .day, value: intervalStart, to: startOfMonth) ?? Date()
-            }
-            .values.map { $0.sorted { $0.dateTime < $1.dateTime } }
-
-        case "Année":
-            groupedWeights = Dictionary(grouping: userWeights) { weight in
-                let date = ISO8601DateFormatter().date(from: weight.dateTime) ?? Date()
-                let month = calendar.component(.month, from: date)
-                return calendar.date(from: DateComponents(year: calendar.component(.year, from: date), month: month, day: 1)) ?? Date()
-            }
-            .values.map { $0.sorted { $0.dateTime < $1.dateTime } }
-
-        default:
-            groupedWeights = []
-        }
-
-        return groupedWeights.sorted { group1, group2 in
-            guard let firstDate1 = group1.first?.dateTime,
-                  let firstDate2 = group2.first?.dateTime else { return false }
-            return firstDate1 < firstDate2
-        }
-    }
-    
-    func calculateAverages() -> [(date: Date, average: Double)] {
-        let groupedWeights = groupWeightsByPeriod()
-        let isoFormatter = ISO8601DateFormatter()
-
-        return groupedWeights.compactMap { group in
-            guard let firstDate = group.first?.dateTime,
-                  let date = isoFormatter.date(from: firstDate) else {
-                return nil
-            }
-            let averageWeight = group.map { $0.weightValue }.reduce(0, +) / Double(group.count)
-
-            return (date: date, average: averageWeight)
+            print("Erreur dans deleteUserWeight : \(error.localizedDescription)")
         }
     }
     
@@ -329,5 +225,9 @@ class ProfileViewModel: ObservableObject {
         return "Date invalide"
     }
     
-
+    private func setError(_ message: String) {
+        DispatchQueue.main.async {
+            self.errorAlert = ErrorAlert(message: message)
+        }
+    }
 }

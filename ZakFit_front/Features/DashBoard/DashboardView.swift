@@ -8,13 +8,26 @@
 import SwiftUI
 
 struct DashboardView: View {
-    @EnvironmentObject var authViewModel: AuthViewModel
-    
-    var body: some View {
-        Text(authViewModel.currentUser?.email ?? "No user")
-    }
-}
+    @EnvironmentObject var dashboardViewViewModel: DashboardViewModel
 
-#Preview {
-    DashboardView()
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                VStack(spacing: 20) {
+                    AppSection(title: "Données caloriques") {
+                        CaloricDataView()
+                    }
+                    AppSection(title: "Période de suivi") {
+                        TrackingPeriodView()
+                    }
+                    AppSection(title: "Suivi du poids") {
+                        WeightTrackingView()
+                    }
+                }
+                .padding()
+            }
+            .navigationTitle("Tableau de bord")
+        }
+        .tint(Color("customOrange"))
+    }
 }

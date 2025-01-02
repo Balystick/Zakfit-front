@@ -19,7 +19,7 @@ struct ProfileView: View {
                         ActivityLevelView()
                     }
                     AppSection(title: "Poids") {
-                        WeightPushView()
+                        WeightView()
                     }
                     AppSection(title: "Bilan énergétique") {
                         EnergyBalanceView()
@@ -52,6 +52,11 @@ struct ProfileView: View {
                 .padding()
             }
             .navigationTitle("Profil & objectifs")
+//            .onAppear {
+//                Task {
+//                    await profileViewModel.fetchLastUserWeight()
+//                }
+//            }
         }
         .tint(Color("customOrange"))
     }

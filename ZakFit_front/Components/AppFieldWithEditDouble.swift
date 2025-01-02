@@ -60,6 +60,9 @@ struct AppFieldWithEditDouble: View {
                     if let unit = unit {
                         Text(unit)
                     }
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundColor(.gray)
                 }
             }
         }

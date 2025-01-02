@@ -7,7 +7,7 @@
 
 import Foundation
 
-class UserAuthViewModel: ObservableObject {
+class UserAuthViewModel: ObservableObject, @unchecked Sendable {
     @Published var email = ""
     @Published var password = ""
     @Published var errorAlert: ErrorAlert?
@@ -24,9 +24,11 @@ class UserAuthViewModel: ObservableObject {
                 authViewModel.currentUser = userAuthResponse.user
             }
         } catch let APIRequestError.serverError(statusCode) {
-            if let data = APIManager.shared.latestErrorResponseData {
-                let errorMessage = APIManager.shared.handleServerError(data: data)
-                setError(errorMessage)
+            if let data = APIManager.shared.latestErrorResponseData,
+               let serverError = try? JSONDecoder().decode(APIErrorDTO.self, from: data) {
+                DispatchQueue.main.async {
+                    self.errorAlert = ErrorAlert(message: serverError.reason)
+                }
             } else {
                 setError("Erreur serveur (\(statusCode)) : Une erreur est survenue.")
             }
@@ -47,9 +49,11 @@ class UserAuthViewModel: ObservableObject {
                 authViewModel.currentUser = userAuthResponseDTO.user
             }
         } catch let APIRequestError.serverError(statusCode) {
-            if let data = APIManager.shared.latestErrorResponseData {
-                let errorMessage = APIManager.shared.handleServerError(data: data)
-                setError(errorMessage)
+            if let data = APIManager.shared.latestErrorResponseData,
+               let serverError = try? JSONDecoder().decode(APIErrorDTO.self, from: data) {
+                DispatchQueue.main.async {
+                    self.errorAlert = ErrorAlert(message: serverError.reason)
+                }
             } else {
                 setError("Erreur serveur (\(statusCode)) : Une erreur est survenue.")
             }

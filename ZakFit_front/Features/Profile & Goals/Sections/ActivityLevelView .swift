@@ -12,7 +12,6 @@ struct ActivityLevelView: View {
     
     var body: some View {
         AppSegmentedPicker(
-            label: "Période",
             options: profileViewModel.activityOptions,
             selection: $profileViewModel.user.activityLevel,
             onValueChanged: {

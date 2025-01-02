@@ -25,6 +25,9 @@ struct AppSecureFieldWithEditString: View {
     var body: some View {
         HStack {
             if isEditing {
+                Text(label)
+                    .fontWeight(.medium)
+                Spacer()
                 SecureField("", text: $temporaryValue, onCommit: {
                     value = temporaryValue
                     if let onValueChanged = onValueChanged {

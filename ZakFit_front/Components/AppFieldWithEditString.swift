@@ -59,6 +59,7 @@ struct AppFieldWithEditString: View {
                     }
                     Image(systemName: "chevron.right")
                         .font(.caption)
+                        .foregroundColor(.gray)
                 }
             }
         }

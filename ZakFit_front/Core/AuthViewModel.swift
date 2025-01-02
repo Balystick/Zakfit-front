@@ -7,7 +7,7 @@
 
 import Foundation
 
-class AuthViewModel: ObservableObject {
+class AuthViewModel: ObservableObject, @unchecked Sendable {
     @Published var isAuthenticated: Bool = false
     @Published var currentUser: User?
 
