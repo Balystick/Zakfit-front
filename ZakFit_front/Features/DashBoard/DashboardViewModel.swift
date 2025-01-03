@@ -8,9 +8,8 @@
 import SwiftUI
 
 class DashboardViewModel: ObservableObject, @unchecked Sendable {
-    private let authViewModel: AuthViewModel
-    @Published var user: User = User()
-    
+    private let sharedViewModel: SharedViewModel
+
     let temp = ""
     @Published var errorMessage: String?
     
@@ -19,55 +18,33 @@ class DashboardViewModel: ObservableObject, @unchecked Sendable {
     @Published var tdee: Double = 0
     
     // Weight
-    @Published var lastUserWeight: UserWeight = UserWeight()
     @Published var trackingPeriodOptions: [String] = ["7 jours", "Mois", "Année"]
     @Published var trackingPeriod: String = "7 jours"
     @Published var userWeights: [UserWeight] = []
     @Published var averageWeights: [(date: Date, average: Double)] = []
     
-    init(authViewModel: AuthViewModel) {
-        self.authViewModel = authViewModel
-        updateUserFromAuth()
-        Task {
-            await self.fetchLastUserWeight()
-            DispatchQueue.main.async {
-                self.calculateBMR()
-                self.calculateTDEE()
-            }
+    init(sharedViewModel: SharedViewModel) {
+        self.sharedViewModel = sharedViewModel
         }
-    }
-    
-    func updateUserFromAuth() {
-        guard let currentUser = authViewModel.currentUser else {
-            print("Erreur dans updateUserFromAuth : currentUser est nil")
-            return
-        }
-        self.user.firstName = currentUser.firstName
-        self.user.lastName = currentUser.lastName
-        self.user.email = currentUser.email
-        self.user.dateOfBirth = currentUser.dateOfBirth
-        self.user.height = currentUser.height
-        self.user.sexe = currentUser.sexe
-        self.user.activityLevel = currentUser.activityLevel
-    }
     
     // Données caloriques
     func calculateBMR() {
         guard
-            let birthDate = ISO8601DateFormatter().date(from: user.dateOfBirth),
-            ["Homme", "Femme"].contains(user.sexe)
+            let birthDate = ISO8601DateFormatter().date(from: sharedViewModel.user.dateOfBirth),
+            ["Homme", "Femme"].contains(sharedViewModel.user.sexe)
         else {
+            self.bmr = 0
             print("Erreur dans calculateBMR : données manquantes")
             return
         }
         
         let age = calculateAge(from: birthDate)
         
-        switch user.sexe {
+        switch sharedViewModel.user.sexe {
         case "Homme":
-            self.bmr = 10 * lastUserWeight.weightValue + 6.25 * user.height - 5 * Double(age) + 5
+            self.bmr = 10 * self.sharedViewModel.lastUserWeight.weightValue + 6.25 * sharedViewModel.user.height - 5 * Double(age) + 5
         case "Femme":
-            self.bmr = 10 * lastUserWeight.weightValue + 6.25 * user.height - 5 * Double(age) - 161
+            self.bmr = 10 * self.sharedViewModel.lastUserWeight.weightValue + 6.25 * sharedViewModel.user.height - 5 * Double(age) - 161
         default:
             self.bmr = 0
         }
@@ -90,31 +67,18 @@ class DashboardViewModel: ObservableObject, @unchecked Sendable {
         
         guard
             bmr > 0,
-            activityFactors.keys.contains(user.activityLevel)
+            activityFactors.keys.contains(sharedViewModel.user.activityLevel)
         else {
+            self.tdee = 0
             print("Erreur dans calculateTDEE : données manquantes")
             return
         }
         
-        let factor = activityFactors[user.activityLevel]!
+        let factor = activityFactors[sharedViewModel.user.activityLevel]!
         self.tdee = bmr * factor
     }
     
     //Weight
-    func fetchLastUserWeight() async {
-        do {
-            let responseDTO = try await APIManager.shared.getLastUserWeight()
-            
-            let userWeight = responseDTO.toModel()
-            
-            DispatchQueue.main.async {
-                self.lastUserWeight = userWeight
-            }
-        } catch {
-            print("Erreur dans fetchLastUserWeight : \(error.localizedDescription)")
-        }
-    }
-    
     func fetchUserWeightsByPeriod() async {
         let (startDate, endDate) = calculatePeriodDates()
         do {

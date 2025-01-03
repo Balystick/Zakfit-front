@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct PersonalInfoView: View {
+    @EnvironmentObject var sharedViewModel: SharedViewModel
     @EnvironmentObject var profileViewModel: ProfileViewModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             AppFieldWithEditString(
                 label: "Prénom",
-                value: $profileViewModel.user.firstName,
+                value: $sharedViewModel.user.firstName,
                 unit: "",
                 onValueChanged: {
                     await profileViewModel.saveUserChanges()
@@ -23,7 +24,7 @@ struct PersonalInfoView: View {
             Divider()
             AppFieldWithEditString(
                 label: "Nom",
-                value: $profileViewModel.user.lastName,
+                value: $sharedViewModel.user.lastName,
                 unit: "",
                 onValueChanged: {
                     await profileViewModel.saveUserChanges()
@@ -32,7 +33,7 @@ struct PersonalInfoView: View {
             Divider()
             AppFieldWithEditString(
                 label: "Email",
-                value: $profileViewModel.user.email,
+                value: $sharedViewModel.user.email,
                 unit: "",
                 onValueChanged: {
                     await profileViewModel.saveUserChanges()
@@ -50,7 +51,7 @@ struct PersonalInfoView: View {
             AppMenuPicker(
                 label: "Sexe",
                 options: profileViewModel.sexeOptions,
-                selectedOption: $profileViewModel.user.sexe,
+                selectedOption: $sharedViewModel.user.sexe,
                 onValueChanged: {
                     await profileViewModel.saveUserChanges()
                 }
@@ -58,7 +59,7 @@ struct PersonalInfoView: View {
             Divider()
             AppDatePicker(
                 label: "Date de naissance",
-                dateString: $profileViewModel.user.dateOfBirth,
+                dateString: $sharedViewModel.user.dateOfBirth,
                 components: .date,
                 onValueChanged: {
                     await profileViewModel.saveUserChanges()
@@ -67,7 +68,7 @@ struct PersonalInfoView: View {
             Divider()
             AppFieldWithEditDouble(
                 label: "Taille",
-                value: $profileViewModel.user.height,
+                value: $sharedViewModel.user.height,
                 unit: "m",
                 onValueChanged: {
                     await profileViewModel.saveUserChanges()

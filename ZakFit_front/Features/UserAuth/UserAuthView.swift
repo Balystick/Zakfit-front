@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct UserAuthView: View {
-    @EnvironmentObject var authViewModel: AuthViewModel
+    @EnvironmentObject var userAuthViewModel: UserAuthViewModel
+    @EnvironmentObject var sharedViewModel: SharedViewModel
     @State private var email: String = ""
     @State private var password: String = ""
-    @StateObject var userAuthViewModel = UserAuthViewModel()
     @State private var bounceEffect = false
     
     var body: some View {
@@ -73,7 +73,7 @@ struct UserAuthView: View {
                 HStack {
                     Button {
                         Task {
-                            await userAuthViewModel.registration(authViewModel: authViewModel)
+                            await userAuthViewModel.registration()
                         }
                     } label: {
                         Text("S'inscrire")
@@ -92,7 +92,7 @@ struct UserAuthView: View {
                 
                     Button {
                         Task {
-                            await userAuthViewModel.login(authViewModel: authViewModel)
+                            await userAuthViewModel.login()
                         }
                     } label: {
                         Text("Se connecter")
@@ -118,10 +118,10 @@ struct UserAuthView: View {
                 }
                 Spacer()
             }
+            .onAppear {
+                sharedViewModel.user = User()
+            }
         }
     }
 }
 
-#Preview {
-    UserAuthView()
-}

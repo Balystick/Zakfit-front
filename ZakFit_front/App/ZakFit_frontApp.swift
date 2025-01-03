@@ -9,9 +9,21 @@ import SwiftUI
 
 @main
 struct ZakFit_frontApp: App {
-    @StateObject private var authViewModel = AuthViewModel()
-    
+    @StateObject private var sharedViewModel = SharedViewModel()
+    @StateObject private var userAuthViewModel: UserAuthViewModel
+    @StateObject private var dashboardViewModel: DashboardViewModel
+    @StateObject private var mealTrackingViewModel: MealTrackingViewModel
+    @StateObject private var activityTrackingViewModel: ActivityTrackingViewModel
+    @StateObject private var profileViewModel: ProfileViewModel
+
     init() {
+        let sharedModel = SharedViewModel()
+        _sharedViewModel = StateObject(wrappedValue: sharedModel)
+        _userAuthViewModel = StateObject(wrappedValue: UserAuthViewModel(sharedViewModel: sharedModel))
+        _dashboardViewModel = StateObject(wrappedValue: DashboardViewModel(sharedViewModel: sharedModel))
+        _mealTrackingViewModel = StateObject(wrappedValue: MealTrackingViewModel(sharedViewModel: sharedModel))
+        _activityTrackingViewModel = StateObject(wrappedValue: ActivityTrackingViewModel(sharedViewModel: sharedModel))
+        _profileViewModel = StateObject(wrappedValue: ProfileViewModel(sharedViewModel: sharedModel))
         // Navigation
         let navigationAppearance = UINavigationBarAppearance()
         navigationAppearance.titleTextAttributes = [.foregroundColor: UIColor.darkGray]
@@ -43,7 +55,12 @@ struct ZakFit_frontApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(authViewModel)
+                .environmentObject(sharedViewModel)
+                .environmentObject(userAuthViewModel)
+                .environmentObject(dashboardViewModel)
+                .environmentObject(mealTrackingViewModel)
+                .environmentObject(activityTrackingViewModel)
+                .environmentObject(profileViewModel)
         }
     }
 }

@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct ContentView: View {
-    @EnvironmentObject var authViewModel: AuthViewModel
-    
+    @EnvironmentObject var sharedViewModel: SharedViewModel
+
     var body: some View {
-        if authViewModel.isAuthenticated {
+        if sharedViewModel.isAuthenticated {
             TabBarView()
         } else {
             UserAuthView()
@@ -19,6 +19,3 @@ struct ContentView: View {
     }
 }
 
-#Preview {
-    ContentView()
-}

@@ -195,4 +195,17 @@ extension APIManager {
             responseType: EmptyBody.self
         )
     }
+    
+    // Goals
+    func getAllGoals() async throws -> [GoalDTO] {
+        let url = "http://127.0.0.1:8080/goals"
+        return try await sendRequest(
+            to: url,
+            method: "GET",
+            body: EmptyBody(),
+            responseType: [GoalDTO].self
+        )
+    }
+    
+    
 }

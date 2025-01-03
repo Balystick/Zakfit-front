@@ -9,8 +9,8 @@
 import Foundation
 
 class MealTrackingViewModel: ObservableObject {
+    private let sharedViewModel: SharedViewModel
 
-    
     
 // ________________________________________________________
     @Published var monitoringPeriod: String = "Aujourd'hui"
@@ -28,4 +28,7 @@ class MealTrackingViewModel: ObservableObject {
     @Published var foodDescription = "Aliment riche en nutriments essentiels, il fournit de l’énergie et contribue au bon fonctionnement de l’organisme. Source de vitamines, minéraux, protéines, glucides ou lipides selon sa nature, il joue un rôle clé dans une alimentation équilibrée."
     var nutrientIsCustom: Bool = true
 
+    init(sharedViewModel: SharedViewModel) {
+        self.sharedViewModel = sharedViewModel
+    }
 }

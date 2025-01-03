@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ProfileView: View {
     @EnvironmentObject var profileViewModel: ProfileViewModel
-    @EnvironmentObject var authViewModel: AuthViewModel
 
     var body: some View {
         NavigationView {
@@ -35,9 +34,7 @@ struct ProfileView: View {
                     }
                     
                     Button(action: {
-                        KeychainManager.deleteTokenFromKeychain()
-                        authViewModel.isAuthenticated = false
-                        authViewModel.currentUser = nil
+                        profileViewModel.logout()
                     }) {
                         Text("Déconnexion")
                             .fontWeight(.bold)
@@ -52,11 +49,6 @@ struct ProfileView: View {
                 .padding()
             }
             .navigationTitle("Profil & objectifs")
-//            .onAppear {
-//                Task {
-//                    await profileViewModel.fetchLastUserWeight()
-//                }
-//            }
         }
         .tint(Color("customOrange"))
     }

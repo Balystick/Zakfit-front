@@ -8,12 +8,13 @@
 import SwiftUI
 
 struct ActivityLevelView: View {
+    @EnvironmentObject var sharedViewModel: SharedViewModel
     @EnvironmentObject var profileViewModel: ProfileViewModel
     
     var body: some View {
         AppSegmentedPicker(
             options: profileViewModel.activityOptions,
-            selection: $profileViewModel.user.activityLevel,
+            selection: $sharedViewModel.user.activityLevel,
             onValueChanged: {
                 await profileViewModel.saveUserChanges()
             }

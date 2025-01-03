@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DashboardView: View {
-    @EnvironmentObject var dashboardViewViewModel: DashboardViewModel
+    @EnvironmentObject var dashboardViewModel: DashboardViewModel
 
     var body: some View {
         NavigationView {
@@ -27,6 +27,12 @@ struct DashboardView: View {
                 .padding()
             }
             .navigationTitle("Tableau de bord")
+            .onAppear {
+                Task {
+                    dashboardViewModel.calculateBMR()
+                    dashboardViewModel.calculateTDEE()
+                }
+            }
         }
         .tint(Color("customOrange"))
     }

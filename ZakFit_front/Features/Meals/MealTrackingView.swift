@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MealTrackingView: View {
-    @StateObject var mealTrackingViewModel = MealTrackingViewModel()
+    @EnvironmentObject var mealTrackingViewModel: DashboardViewModel
     
     var body: some View {
         NavigationView {

@@ -8,11 +8,15 @@
 import SwiftUI
 
 class ActivityTrackingViewModel: ObservableObject {
+    private let sharedViewModel: SharedViewModel
+
     @Published var activityPeriodOptions: [String] = ["7 jours", "Mois", "Année"]
     @Published var activityPeriod: String = "7 jours"
     
     func fetchActivitiesByPeriod() {}
     
-    
+    init(sharedViewModel: SharedViewModel) {
+        self.sharedViewModel = sharedViewModel
+    }
 }
 

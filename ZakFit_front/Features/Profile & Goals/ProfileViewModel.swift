@@ -8,13 +8,12 @@
 import SwiftUI
 
 class ProfileViewModel: ObservableObject, @unchecked Sendable {
-    private let authViewModel: AuthViewModel
-    @Published var user: User = User()
-    // tmp
-    @Published var tmp: Double = 0
-    
+    private let sharedViewModel: SharedViewModel
     @Published var successMessage: String? = nil
     @Published var errorAlert: ErrorAlert?
+    
+    // tmp
+    @Published var tmp: Double = 0
     
     let activityOptions = [
         "Sédentaire",
@@ -22,7 +21,9 @@ class ProfileViewModel: ObservableObject, @unchecked Sendable {
         "Actif",
         "Très actif"
     ]
+
     let sexeOptions = [ "Homme", "Femme", "Non renseigné" ]
+
     // Notifications
     @Published var isReminderEnabled: Bool = true
     @Published var selectedRecurrence: String = "Jamais"
@@ -33,54 +34,37 @@ class ProfileViewModel: ObservableObject, @unchecked Sendable {
         "Toutes les 2 semaines",
         "Tous les mois"
     ]
+
     // UpdatePassword
     @Published var oldPassword: String = ""
     @Published var newPassword: String = ""
     @Published var confirmNewPassword: String = ""
     
     // Weight
-    @Published var lastUserWeight: UserWeight = UserWeight()
     @Published var userWeights: [UserWeight] = []
     
-    init(authViewModel: AuthViewModel) {
-        self.authViewModel = authViewModel
-        updateUserFromAuth()
+    init(sharedViewModel: SharedViewModel) {
+        self.sharedViewModel = sharedViewModel
         Task {
             await self.fetchLastUserWeight()
         }
     }
     
-    func updateUserFromAuth() {
-        guard let currentUser = authViewModel.currentUser else {
-            print("Erreur dans updateUserFromAuth : currentUser est nil")
-            return
-        }
-        self.user.firstName = currentUser.firstName
-        self.user.lastName = currentUser.lastName
-        self.user.email = currentUser.email
-        self.user.dateOfBirth = currentUser.dateOfBirth
-        self.user.height = currentUser.height
-        self.user.sexe = currentUser.sexe
-        self.user.activityLevel = currentUser.activityLevel
+    func logout() {
+        KeychainManager.deleteTokenFromKeychain()
+        self.sharedViewModel.isAuthenticated = false
     }
     
     func saveUserChanges() async {
+        guard sharedViewModel.isAuthenticated else {
+            print("Modification ignorée : utilisateur non authentifié")
+            return
+        }
         do {
-            let userUpdate = User(
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
-                dateOfBirth: user.dateOfBirth,
-                height: user.height,
-                sexe: user.sexe,
-                activityLevel: user.activityLevel
-            )
-            
-            let updatedUserDTO = try await APIManager.shared.updateUser(userUpdate)
+            let updatedUserDTO = try await APIManager.shared.updateUser(sharedViewModel.user)
             
             DispatchQueue.main.async {
-                self.user = updatedUserDTO.toModel()
-                self.authViewModel.currentUser = self.user
+                self.sharedViewModel.user = updatedUserDTO.toModel()
             }
         } catch {
             print("Erreur dans saveUserChanges : \(error.localizedDescription)")
@@ -122,7 +106,7 @@ class ProfileViewModel: ObservableObject, @unchecked Sendable {
             let userWeight = responseDTO.toModel()
             
             DispatchQueue.main.async {
-                self.lastUserWeight = userWeight
+                self.sharedViewModel.lastUserWeight.weightValue = userWeight.weightValue
             }
         } catch {
             print("Erreur dans fetchLastUserWeight : \(error.localizedDescription)")
@@ -144,7 +128,7 @@ class ProfileViewModel: ObservableObject, @unchecked Sendable {
     
     func createUserWeight() async {
         do {
-            let weightValue = lastUserWeight.weightValue
+            let weightValue = self.sharedViewModel.lastUserWeight.weightValue
             
             let dateTime = Date()
             let isoFormatter = ISO8601DateFormatter()
@@ -160,7 +144,7 @@ class ProfileViewModel: ObservableObject, @unchecked Sendable {
             let createdWeight = responseDTO.toModel()
             
             DispatchQueue.main.async {
-                self.lastUserWeight = createdWeight
+                self.sharedViewModel.lastUserWeight = createdWeight
                 self.userWeights.append(createdWeight)
                 self.userWeights.sort { $0.dateTime > $1.dateTime }
             }
@@ -190,7 +174,7 @@ class ProfileViewModel: ObservableObject, @unchecked Sendable {
                     self.userWeights[index] = updatedWeight
                     self.userWeights.sort { $0.dateTime > $1.dateTime }
                     if let mostRecentWeight = self.userWeights.first, mostRecentWeight.id == id {
-                        self.lastUserWeight = mostRecentWeight
+                        self.sharedViewModel.lastUserWeight = mostRecentWeight
                     }
                 }
             }

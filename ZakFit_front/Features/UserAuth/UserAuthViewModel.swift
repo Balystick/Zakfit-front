@@ -5,23 +5,30 @@
 //  Created by Aurélien on 10/12/2024.
 //
 
-import Foundation
+import SwiftUI
 
 class UserAuthViewModel: ObservableObject, @unchecked Sendable {
+    private let sharedViewModel: SharedViewModel
     @Published var email = ""
     @Published var password = ""
     @Published var errorAlert: ErrorAlert?
     
-    func login(authViewModel: AuthViewModel) async {
+    init(sharedViewModel: SharedViewModel) {
+        self.sharedViewModel = sharedViewModel
+    }
+    
+    func login() async {
         guard validateInputs() else { return }
 
         do {
-            let userAuthResponse = try await APIManager.shared.loginUser(email: email, password: password)
-            KeychainManager.saveTokenToKeychain(token: userAuthResponse.token)
+            let userAuthResponseDTO = try await APIManager.shared.loginUser(email: email, password: password)
+            KeychainManager.saveTokenToKeychain(token: userAuthResponseDTO.token)
             
             DispatchQueue.main.async {
-                authViewModel.isAuthenticated = true
-                authViewModel.currentUser = userAuthResponse.user
+                self.sharedViewModel.isAuthenticated = true
+                self.sharedViewModel.user = userAuthResponseDTO.user
+                self.email = ""
+                self.password = ""
             }
         } catch let APIRequestError.serverError(statusCode) {
             if let data = APIManager.shared.latestErrorResponseData,
@@ -37,7 +44,7 @@ class UserAuthViewModel: ObservableObject, @unchecked Sendable {
         }
     }
     
-    func registration(authViewModel: AuthViewModel) async {
+    func registration() async {
         guard validateInputs() else { return }
         
         do {
@@ -45,8 +52,10 @@ class UserAuthViewModel: ObservableObject, @unchecked Sendable {
             KeychainManager.saveTokenToKeychain(token: userAuthResponseDTO.token)
             
             DispatchQueue.main.async {
-                authViewModel.isAuthenticated = true
-                authViewModel.currentUser = userAuthResponseDTO.user
+                self.sharedViewModel.isAuthenticated = true
+                self.sharedViewModel.user = userAuthResponseDTO.user
+                self.email = ""
+                self.password = ""
             }
         } catch let APIRequestError.serverError(statusCode) {
             if let data = APIManager.shared.latestErrorResponseData,

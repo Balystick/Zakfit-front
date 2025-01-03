@@ -9,12 +9,13 @@ import SwiftUI
 
 struct WeightView: View {
     @EnvironmentObject var profileViewModel: ProfileViewModel
+    @EnvironmentObject var sharedViewModel: SharedViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             AppFieldWithEditDouble(
                 label: "Poids actuel",
-                value: $profileViewModel.lastUserWeight.weightValue,
+                value: $sharedViewModel.lastUserWeight.weightValue,
                 unit: "kg",
                 onValueChanged: {
                     await profileViewModel.createUserWeight()
@@ -31,7 +32,7 @@ struct WeightView: View {
             Divider()
             AppFieldWithPush(
                 label: "Poids cible",
-                value: $profileViewModel.lastUserWeight.weightValue,
+                value: $sharedViewModel.lastUserWeight.weightValue,
                 unit: "kg",
                 destination: GoalsView()
             )

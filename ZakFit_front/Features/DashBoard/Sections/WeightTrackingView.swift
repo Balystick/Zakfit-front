@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct WeightTrackingView: View {
-    @EnvironmentObject var dashboardViewModel: DashboardViewModel
+    @EnvironmentObject var sharedViewModel: SharedViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             AppField(
                 label: "Poids actuel",
-                value: dashboardViewModel.lastUserWeight.weightValue,
+                value: sharedViewModel.lastUserWeight.weightValue,
                 unit: "kg"
             )
             WeightChartView()

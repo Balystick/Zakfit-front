@@ -15,13 +15,11 @@ enum Tab: String {
 }
 
 struct TabBarView: View {
-    @EnvironmentObject var authViewModel: AuthViewModel
     @State private var selectedTab: Tab = .dashboard
     
     var body: some View {
         TabView(selection: $selectedTab) {
             DashboardView()
-                .environmentObject(DashboardViewModel(authViewModel: authViewModel))
                 .tabItem {
                     Image(systemName: Tab.dashboard.rawValue)
                     Text("Tableau de bord")
@@ -29,7 +27,6 @@ struct TabBarView: View {
                 .tag(Tab.dashboard)
             
             MealTrackingView()
-                .environmentObject(MealTrackingViewModel())
                 .tabItem {
                     Image(systemName: Tab.mealTracking.rawValue)
                     Text("Repas")
@@ -37,7 +34,6 @@ struct TabBarView: View {
                 .tag(Tab.mealTracking)
             
             ActivityTrackingView()
-                .environmentObject(ActivityTrackingViewModel())
                 .tabItem {
                     Image(systemName: Tab.activityTracking.rawValue)
                     Text("Activités")
@@ -45,7 +41,6 @@ struct TabBarView: View {
                 .tag(Tab.activityTracking)
             
             ProfileView()
-                .environmentObject(ProfileViewModel(authViewModel: authViewModel))
                 .tabItem {
                     Image(systemName: Tab.profile.rawValue)
                     Text("Profil")
@@ -56,8 +51,3 @@ struct TabBarView: View {
     }
 }
 
-
-
-#Preview {
-    TabBarView()
-}
