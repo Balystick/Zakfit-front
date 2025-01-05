@@ -12,11 +12,12 @@ struct FoodPreferencesView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
+            
             AppFieldWithLink(
                 label: "Type de régime",
                 value: "Végétarien",
                 destination: {
-                    GoalsView()
+                    ActivityGoalsView()
                 }
             )
             Divider()

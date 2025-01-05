@@ -30,11 +30,19 @@ struct WeightView: View {
                 }
             )
             Divider()
-            AppFieldWithPush(
+            AppFieldWithEditDouble(
                 label: "Poids cible",
-                value: $sharedViewModel.lastUserWeight.weightValue,
+                value: $sharedViewModel.userWeightTargetValue,
                 unit: "kg",
-                destination: GoalsView()
+                onValueChanged: {
+                    if sharedViewModel.userWeightTargetValue == 0 {
+                        if let goalId = profileViewModel.goals.first(where: { $0.goalType.name == "Poids cible" })?.id {
+                            await profileViewModel.deleteGoal(goalId: goalId)
+                        }
+                    } else {
+                        await profileViewModel.createOrUpdateWeightGoal(targetValue: sharedViewModel.userWeightTargetValue)
+                    }
+                }
             )
         }
     }

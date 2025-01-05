@@ -9,8 +9,8 @@ import Foundation
 
 struct CreateGoalRequestDTO: Codable {
     let goalTypeId: UUID
-    let goalStatusId: UUID
-    let goalUnitId: UUID?
+    let goalStatus: String
+    let goalUnit: String?
     let relatedActivityTypeId: UUID?
     let relatedNutrientId: UUID?
     let targetValue: Double

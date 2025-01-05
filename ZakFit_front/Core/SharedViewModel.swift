@@ -11,4 +11,6 @@ class SharedViewModel: ObservableObject, @unchecked Sendable {
     @Published var isAuthenticated: Bool = false
     @Published var user: User = User()
     @Published var lastUserWeight: UserWeight = UserWeight()
+    @Published var userWeightTargetValue: Double = 0
+
 }

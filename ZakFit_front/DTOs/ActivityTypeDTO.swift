@@ -14,3 +14,15 @@ struct ActivityTypeDTO: Codable {
     let caloriesPerMinute: Double
     let isCustom: Bool
 }
+
+extension ActivityTypeDTO {
+    func toModel() -> ActivityType {
+        return ActivityType(
+            id: self.id,
+            name: self.name,
+            description: self.description,
+            caloriesPerMinute: self.caloriesPerMinute,
+            isCustom: self.isCustom
+        )
+    }
+}

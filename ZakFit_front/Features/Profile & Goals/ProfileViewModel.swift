@@ -43,6 +43,17 @@ class ProfileViewModel: ObservableObject, @unchecked Sendable {
     // Weight
     @Published var userWeights: [UserWeight] = []
     
+    // Goals
+    @Published var goals: [Goal] = []
+    @Published var goalTypes: [GoalType] = []
+    @Published var goalTypeName: String = "Ajouter"
+    @Published var activityTypes: [ActivityType] = []
+    
+
+
+    
+
+    
     init(sharedViewModel: SharedViewModel) {
         self.sharedViewModel = sharedViewModel
         Task {
@@ -196,6 +207,140 @@ class ProfileViewModel: ObservableObject, @unchecked Sendable {
         }
     }
     
+    // Goals
+    func fetchAllGoals() async {
+        do {
+            let responseDTOs = try await APIManager.shared.getAllGoals()
+            DispatchQueue.main.async {
+                self.goals = responseDTOs.map { $0.toModel() }
+                    .sorted { $0.priority < $1.priority }
+            }
+        } catch {
+            print("Erreur dans fetchAllGoals : \(error.localizedDescription)")
+        }
+    }
+    
+    func createGoal(_ createGoalRequest: CreateGoalRequestDTO) async {
+        do {
+            let createdGoalDTO = try await APIManager.shared.createGoal(createGoalRequest)
+            DispatchQueue.main.async {
+                let createdGoal = createdGoalDTO.toModel()
+                self.goals.append(createdGoal)
+                self.goals.sort { $0.priority < $1.priority }
+            }
+        } catch {
+            print("Erreur dans createGoal : \(error.localizedDescription)")
+        }
+    }
+    
+    func updateGoal(goalId: UUID, with updateGoalRequest: UpdateGoalRequestDTO) async {
+        do {
+            let updatedGoalDTO = try await APIManager.shared.updateGoal(goalId: goalId, updateGoalRequest: updateGoalRequest)
+            DispatchQueue.main.async {
+                if let index = self.goals.firstIndex(where: { $0.id == goalId }) {
+                    self.goals[index] = updatedGoalDTO.toModel()
+                    self.goals.sort { $0.priority < $1.priority }
+                }
+            }
+        } catch {
+            print("Erreur dans updateGoal : \(error.localizedDescription)")
+        }
+    }
+    
+    func deleteGoal(goalId: UUID) async {
+        do {
+            try await APIManager.shared.deleteGoal(goalId: goalId)
+            DispatchQueue.main.async {
+                self.goals.removeAll { $0.id == goalId }
+            }
+        } catch {
+            print("Erreur dans deleteGoal : \(error.localizedDescription)")
+        }
+    }
+    
+    func fetchGoalTypes() async {
+        do {
+            let goalTypesDTO = try await APIManager.shared.getGoalTypes()
+            DispatchQueue.main.async {
+                self.goalTypes = goalTypesDTO
+                    .map { $0.toModel() }
+                    .sorted { $0.order < $1.order }
+            }
+        } catch {
+            print("Erreur dans fetchGoalTypes : \(error.localizedDescription)")
+        }
+    }
+    
+    func fetchActivityTypes() async {
+        do {
+            let activityTypesDTO = try await APIManager.shared.getActivityTypes()
+            DispatchQueue.main.async {
+                self.activityTypes = activityTypesDTO.map { $0.toModel() }
+            }
+        } catch {
+            print("Erreur dans fetchActivityTypes : \(error.localizedDescription)")
+        }
+    }
+    
+    func getGoalTypeNames(forCategory categoryName: String) -> [String] {
+        return self.goalTypes
+            .filter { $0.categoryName == categoryName }
+            .map { $0.name }
+    }
+    
+    func loadUserWeightTargetValue() {
+        if let weightGoal = goals.first(where: { $0.goalType.categoryName == "Objectifs de poids" }) {
+            sharedViewModel.userWeightTargetValue = weightGoal.targetValue
+        }
+    }
+    
+    func createOrUpdateWeightGoal(targetValue: Double) async {
+        if let existingGoal = goals.first(where: { $0.goalType.name == "Poids cible" }) {
+            let updateRequest = UpdateGoalRequestDTO(
+                goalTypeId: existingGoal.goalType.id,
+                goalStatus: existingGoal.goalStatus,
+                goalUnit: existingGoal.goalUnit,
+                relatedActivityTypeId: existingGoal.relatedActivityType?.id,
+                relatedNutrientId: existingGoal.relatedNutrientId,
+                targetValue: targetValue,
+                minValue: existingGoal.minValue,
+                maxValue: existingGoal.maxValue,
+                frequency: existingGoal.frequency,
+                startDate: existingGoal.startDate,
+                endDate: existingGoal.endDate,
+                priority: existingGoal.priority,
+                description: existingGoal.description
+            )
+            await updateGoal(goalId: existingGoal.id, with: updateRequest)
+        } else {
+            guard let goalTypeId = getGoalTypeId(forName: "Poids cible") else {
+                print("Erreur : Impossible de trouver le type d'objectif 'Poids cible'")
+                return
+            }
+
+            let createRequest = CreateGoalRequestDTO(
+                goalTypeId: goalTypeId,
+                goalStatus: "Actif",
+                goalUnit: "kg",
+                relatedActivityTypeId: nil,
+                relatedNutrientId: nil,
+                targetValue: targetValue,
+                minValue: nil,
+                maxValue: nil,
+                frequency: nil,
+                startDate: formatDateForRequest(Date()),
+                endDate: nil,
+                priority: 1,
+                description: nil
+            )
+            await createGoal(createRequest)
+        }
+    }
+    
+    func getGoalTypeId(forName name: String) -> UUID? {
+        return goalTypes.first(where: { $0.name == name })?.id
+    }
+    
     // Move to sharedViewModel ?
     func formatDate(_ isoDateString: String) -> String {
         let isoFormatter = ISO8601DateFormatter()
@@ -207,6 +352,11 @@ class ProfileViewModel: ObservableObject, @unchecked Sendable {
             return dateFormatter.string(from: date)
         }
         return "Date invalide"
+    }
+    
+    func formatDateForRequest(_ date: Date) -> String {
+        let isoFormatter = ISO8601DateFormatter()
+        return isoFormatter.string(from: date)
     }
     
     private func setError(_ message: String) {

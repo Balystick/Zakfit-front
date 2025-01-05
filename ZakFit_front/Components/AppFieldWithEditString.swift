@@ -48,14 +48,20 @@ struct AppFieldWithEditString: View {
                     .fontWeight(.medium)
                 Spacer()
                 HStack {
-                    Text(value)
-                        .foregroundColor(Color(UIColor.darkGray))
-                        .onTapGesture {
-                            temporaryValue = value
-                            isEditing = true
+                    if value == "" {
+                        Text("Non défini")
+                            .foregroundColor(.gray)
+                            .italic()
+                    } else {
+                        Text(value)
+                            .foregroundColor(Color(UIColor.darkGray))
+                            .onTapGesture {
+                                temporaryValue = value
+                                isEditing = true
+                            }
+                        if let unit = unit {
+                            Text(unit)
                         }
-                    if let unit = unit {
-                        Text(unit)
                     }
                     Image(systemName: "chevron.right")
                         .font(.caption)

@@ -42,7 +42,7 @@ struct AppMenuPicker: View {
         }
     }
 }
-//AppMenu(
+//AppMenuPicker(
 //    label: "Niveau d'activité",
 //    options: ["Sédentaire", "Modéré", "Actif", "Très actif"],
 //    selectedOption: $profileViewModel.user.activityLevel,

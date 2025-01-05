@@ -28,6 +28,21 @@ struct AppFieldWithEditDouble: View {
     var body: some View {
         HStack {
             if isEditing {
+                if value != 0 {
+                    Button(action: {
+                        value = 0
+                        temporaryValue = "0"
+                        isEditing = false
+                        if let onValueChanged = onValueChanged {
+                            Task {
+                                await onValueChanged()
+                            }
+                        }
+                    }) {
+                        Image(systemName: "trash")
+                            .foregroundColor(.red)
+                    }
+                }
                 Text(label)
                     .fontWeight(.medium)
                 Spacer()
@@ -53,17 +68,23 @@ struct AppFieldWithEditDouble: View {
                     .fontWeight(.medium)
                 Spacer()
                 HStack {
-                    Text(String(format: "%.2f", locale: Locale(identifier: "en_US"), value))                        .onTapGesture {
-                        temporaryValue = String(format: "%.2f", value)
-                        isEditing = true
-                    }
-                    if let unit = unit {
-                        Text(unit)
+                    if value == 0 {
+                        Text("Non défini")
+                            .foregroundColor(.gray)
+                    } else {
+                        Text(String(format: "%.2f", locale: Locale(identifier: "en_US"), value))
+                        if let unit = unit {
+                            Text(unit)
+                        }
                     }
                     Image(systemName: "chevron.right")
                         .font(.caption)
                         .foregroundColor(.gray)
                 }
+                .onTapGesture {
+          temporaryValue = String(format: "%.2f", value)
+          isEditing = true
+      }
             }
         }
         .padding(.vertical, 4)

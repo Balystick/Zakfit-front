@@ -1,15 +1,16 @@
 //
-//  ProfileView.swift
+//  GoalAddView.swift
 //  ZakFit_front
 //
-//  Created by Aurélien on 12/12/2024.
+//  Created by Aurélien on 04/01/2025.
 //
 
 import SwiftUI
 
-struct ProfileView: View {
+struct GoalAddView: View {
     @EnvironmentObject var profileViewModel: ProfileViewModel
-
+    let goalType: GoalType
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -26,9 +27,6 @@ struct ProfileView: View {
                     AppSection(title: "Préférences alimentaires") {
                         FoodPreferencesView()
                     }
-                    AppSection(title: "Objectifs d'activités physiques") {
-                        ActivityGoalsView()
-                    }
                     AppSection(title: "Notifications et rappels") {
                         NotificationsView()
                     }
@@ -39,7 +37,7 @@ struct ProfileView: View {
                     Button(action: {
                         profileViewModel.logout()
                     }) {
-                        Text("Déconnexion")
+                        Text("Valider")
                             .fontWeight(.bold)
                             .padding()
                             .frame(maxWidth: .infinity)
@@ -50,14 +48,6 @@ struct ProfileView: View {
                     .padding(.horizontal)
                 }
                 .padding()
-            }
-            .navigationTitle("Profil & objectifs")
-            .onAppear {
-                Task {
-                    await profileViewModel.fetchAllGoals()
-                    await profileViewModel.fetchGoalTypes()
-                    profileViewModel.loadUserWeightTargetValue()
-                }
             }
         }
         .tint(Color("customOrange"))

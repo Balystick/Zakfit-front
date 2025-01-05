@@ -207,5 +207,55 @@ extension APIManager {
         )
     }
     
+    func createGoal(_ createGoalRequest: CreateGoalRequestDTO) async throws -> GoalDTO {
+        let url = "http://127.0.0.1:8080/goals"
+        return try await sendRequest(
+            to: url,
+            method: "POST",
+            body: createGoalRequest,
+            responseType: GoalDTO.self
+        )
+    }
     
+    func updateGoal(goalId: UUID, updateGoalRequest: UpdateGoalRequestDTO) async throws -> GoalDTO {
+        let url = "http://127.0.0.1:8080/goals/\(goalId)"
+        return try await sendRequest(
+            to: url,
+            method: "PUT",
+            body: updateGoalRequest,
+            responseType: GoalDTO.self
+        )
+    }
+    
+    func deleteGoal(goalId: UUID) async throws {
+        let url = "http://127.0.0.1:8080/goals/\(goalId)"
+        _ = try await sendRequest(
+            to: url,
+            method: "DELETE",
+            body: EmptyBody(),
+            responseType: EmptyBody.self
+        )
+    }
+    
+    func getGoalTypes() async throws -> [GoalTypeDTO] {
+        let url = "http://127.0.0.1:8080/goals/types"
+        return try await sendRequest(
+            to: url,
+            method: "GET",
+            body: EmptyBody(),
+            responseType: [GoalTypeDTO].self
+        )
+    }
+    
+    // Activity
+    
+    func getActivityTypes() async throws -> [ActivityTypeDTO] {
+        let url = "http://127.0.0.1:8080/activities/types"
+        return try await sendRequest(
+            to: url,
+            method: "GET",
+            body: EmptyBody(),
+            responseType: [ActivityTypeDTO].self
+        )
+    }
 }
