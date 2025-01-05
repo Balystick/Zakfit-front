@@ -1,18 +1,18 @@
 //
-//  ActivityTypeView.swift
+//  GoalTypesView.swift
 //  ZakFit_front
 //
-//  Created by Aurélien on 30/12/2024.
+//  Created by Aurélien on 05/01/2025.
 //
 
 import SwiftUI
 
-struct ActivityTypeView: View {
+struct GoalTypesView: View {
     var body: some View {
         Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
     }
 }
 
 #Preview {
-    ActivityTypeView()
+    GoalTypesView()
 }

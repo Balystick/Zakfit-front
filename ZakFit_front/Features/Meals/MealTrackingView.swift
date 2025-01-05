@@ -15,10 +15,10 @@ struct MealTrackingView: View {
             ScrollView {
                 VStack(spacing: 20) {
                     VStack(alignment: .leading, spacing: 10) {
-                        AppSection(title: "Période de suivi") {
-                            MealPeriodView()
+                        AppSection(title: "Filtrer par date") {
+                            MealFilterView()
                         }
-                        AppSection(title: "Repas") {
+                        AppSection(title: "Suivi des repas") {
                             MealListView()
                         }
                     }

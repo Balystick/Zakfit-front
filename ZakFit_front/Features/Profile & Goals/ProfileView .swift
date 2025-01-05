@@ -9,6 +9,8 @@ import SwiftUI
 
 struct ProfileView: View {
     @EnvironmentObject var profileViewModel: ProfileViewModel
+    @State private var isModalPresented: Bool = false
+    @State private var selectedGoalTypeCategory: String = ""
 
     var body: some View {
         NavigationView {
@@ -20,14 +22,14 @@ struct ProfileView: View {
                     AppSection(title: "Poids") {
                         WeightView()
                     }
-                    AppSection(title: "Bilan énergétique") {
-                        EnergyBalanceView()
+                    AppSection(title: "Objectif calorique quotidien") {
+                        CaloricGoalView()
                     }
                     AppSection(title: "Préférences alimentaires") {
-                        FoodPreferencesView()
+                        FoodPreferencesView(isModalPresented: $isModalPresented, selectedGoalTypeCategory: $selectedGoalTypeCategory)
                     }
                     AppSection(title: "Objectifs d'activités physiques") {
-                        ActivityGoalsView()
+                        ActivityGoalsView(isModalPresented: $isModalPresented, selectedGoalTypeCategory: $selectedGoalTypeCategory)
                     }
                     AppSection(title: "Notifications et rappels") {
                         NotificationsView()
@@ -56,10 +58,13 @@ struct ProfileView: View {
                 Task {
                     await profileViewModel.fetchAllGoals()
                     await profileViewModel.fetchGoalTypes()
-                    profileViewModel.loadUserWeightTargetValue()
+                    profileViewModel.loadGoalsTargetValues()
                 }
             }
         }
         .tint(Color("customOrange"))
+        .sheet(isPresented: $isModalPresented) {
+            GoalAddView(isModalPresented: $isModalPresented, selectedGoalTypeCategory: $selectedGoalTypeCategory)
+        }
     }
 }

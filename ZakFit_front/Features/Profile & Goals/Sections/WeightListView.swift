@@ -23,28 +23,22 @@ struct WeightListView: View {
                 ForEach($profileViewModel.userWeights, id: \.id) { $weight in
                     HStack {
                         if editingWeightID == weight.id {
-                            Button(action: {
-                                Task {
-                                    await profileViewModel.deleteUserWeight(id: weight.id)
-                                    editingWeightID = nil
-                                }
-                            }) {
-                                Image(systemName: "trash")
-                                    .foregroundColor(.red)
-                            }
-
                             AppFieldWithEditDouble(
                                 label: profileViewModel.formatDate(weight.dateTime),
                                 value: $weight.weightValue,
                                 unit: "kg",
                                 startEditing: true,
                                 onValueChanged: {
-                                    await profileViewModel.updateUserWeight(
-                                        id: weight.id,
-                                        dateTime: ISO8601DateFormatter().date(from: weight.dateTime) ?? Date(),
-                                        weightValue: weight.weightValue
-                                    )
-                                    editingWeightID = nil
+                                    if weight.weightValue == 0 {
+                                        await profileViewModel.deleteUserWeight(id: weight.id)
+                                    } else {
+                                        await profileViewModel.updateUserWeight(
+                                            id: weight.id,
+                                            dateTime: ISO8601DateFormatter().date(from: weight.dateTime) ?? Date(),
+                                            weightValue: weight.weightValue
+                                        )
+                                        editingWeightID = nil
+                                    }
                                 }
                             )
                         } else {

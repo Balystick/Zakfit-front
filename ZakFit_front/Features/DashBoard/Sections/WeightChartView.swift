@@ -10,6 +10,7 @@ import Charts
 
 struct WeightChartView: View {
     @EnvironmentObject var dashboardViewModel: DashboardViewModel
+    @EnvironmentObject var sharedViewModel: SharedViewModel
 
     var body: some View {
         if dashboardViewModel.userWeights.isEmpty {
@@ -29,17 +30,11 @@ struct WeightChartView: View {
                     .foregroundStyle(.customOrange)
                 }
                 
-                // Affichage des objectifs
-                //            if let targetWeight = profileViewModel.targetWeight {
-                //                RuleMark(y: .value("Objectif", targetWeight))
-                //                    .foregroundStyle(.green)
-                //                    .lineStyle(StrokeStyle(lineWidth: 2, dash: [5]))
-                //                    .annotation(position: .top, alignment: .leading) {
-                //                        Text("Objectif: \(targetWeight, specifier: "%.1f") kg")
-                //                            .font(.caption)
-                //                            .foregroundColor(.green)
-                //                    }
-                //            }
+                if sharedViewModel.userWeightGoalTargetValue > 0 {
+                    RuleMark(y: .value("Objectif", sharedViewModel.userWeightGoalTargetValue))
+                        .foregroundStyle(.green)
+                        .lineStyle(StrokeStyle(lineWidth: 2, dash: [5]))
+                }
             }
             .chartXAxis {
                 AxisMarks(position: .bottom)

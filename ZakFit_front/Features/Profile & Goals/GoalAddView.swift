@@ -9,33 +9,41 @@ import SwiftUI
 
 struct GoalAddView: View {
     @EnvironmentObject var profileViewModel: ProfileViewModel
-    let goalType: GoalType
-    
+    @Binding var isModalPresented: Bool
+    @Binding var selectedGoalTypeCategory: String
+
     var body: some View {
-        NavigationView {
-            ScrollView {
-                VStack(spacing: 20) {
-                    AppSection(title: "Niveau d'activité physique") {
-                        ActivityLevelView()
+        ScrollView {
+            VStack(spacing: 20) {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text(selectedGoalTypeCategory)
+                        .font(.headline)
+                        .foregroundColor(Color("customOrange"))
+                    VStack(spacing: 10) {
+                        ForEach(profileViewModel.goalTypes.filter { $0.categoryName == selectedGoalTypeCategory }) { goalType in
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text(goalType.name)
+                                        .fontWeight(.bold)
+                                    Text(goalType.description)
+                                        .font(.body)
+                                }
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                            }
+                            if let lastFilteredGoalType = profileViewModel.goalTypes.filter({ $0.categoryName == selectedGoalTypeCategory }).last,
+                               goalType.id != lastFilteredGoalType.id {
+                                Divider()
+                            }
+                        }
                     }
-                    AppSection(title: "Poids") {
-                        WeightView()
-                    }
-                    AppSection(title: "Bilan énergétique") {
-                        EnergyBalanceView()
-                    }
-                    AppSection(title: "Préférences alimentaires") {
-                        FoodPreferencesView()
-                    }
-                    AppSection(title: "Notifications et rappels") {
-                        NotificationsView()
-                    }
-                    AppSection(title: "Informations personnelles") {
-                        PersonalInfoView()
-                    }
-                    
+                    .padding()
+                    .background(Color(UIColor.systemGray6))
+                    .cornerRadius(10)
                     Button(action: {
-                        profileViewModel.logout()
+                        isModalPresented = false
                     }) {
                         Text("Valider")
                             .fontWeight(.bold)
@@ -50,6 +58,5 @@ struct GoalAddView: View {
                 .padding()
             }
         }
-        .tint(Color("customOrange"))
     }
 }

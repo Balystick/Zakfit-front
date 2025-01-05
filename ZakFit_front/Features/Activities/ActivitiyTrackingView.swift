@@ -15,9 +15,9 @@ struct ActivityTrackingView: View {
             ScrollView {
                 VStack(spacing: 20) {
                     AppSection(title: "Période de suivi") {
-                        ActivityPeriodView()
+                        ActivityFilterView()
                     }
-                    AppSection(title: "Activités pour la période") {
+                    AppSection(title: "Suivi des activités") {
                         ActivityListView()
                     }
                 }

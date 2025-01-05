@@ -46,13 +46,7 @@ class ProfileViewModel: ObservableObject, @unchecked Sendable {
     // Goals
     @Published var goals: [Goal] = []
     @Published var goalTypes: [GoalType] = []
-    @Published var goalTypeName: String = "Ajouter"
     @Published var activityTypes: [ActivityType] = []
-    
-
-
-    
-
     
     init(sharedViewModel: SharedViewModel) {
         self.sharedViewModel = sharedViewModel
@@ -288,9 +282,15 @@ class ProfileViewModel: ObservableObject, @unchecked Sendable {
             .map { $0.name }
     }
     
-    func loadUserWeightTargetValue() {
+    func loadGoalsTargetValues() {
         if let weightGoal = goals.first(where: { $0.goalType.categoryName == "Objectifs de poids" }) {
-            sharedViewModel.userWeightTargetValue = weightGoal.targetValue
+            sharedViewModel.userWeightGoalTargetValue = weightGoal.targetValue
+        }
+        if let consumedCaloriesGoal = goals.first(where: { $0.goalType.name == "Calories par jour (consommation)" }) {
+            sharedViewModel.consumedCaloriesGoalTargetValue = consumedCaloriesGoal.targetValue
+        }
+        if let burnedCaloriesGoal = goals.first(where: { $0.goalType.name == "Calories par jour (dépense)" }) {
+            sharedViewModel.burnedCaloriesGoalTargetValue = burnedCaloriesGoal.targetValue
         }
     }
     
@@ -336,6 +336,93 @@ class ProfileViewModel: ObservableObject, @unchecked Sendable {
             await createGoal(createRequest)
         }
     }
+    
+    func createOrUpdateConsumedCaloriesGoal(targetValue: Double) async {
+        if let existingGoal = goals.first(where: { $0.goalType.name == "Calories par jour (consommation)" }) {
+            let updateRequest = UpdateGoalRequestDTO(
+                goalTypeId: existingGoal.goalType.id,
+                goalStatus: existingGoal.goalStatus,
+                goalUnit: existingGoal.goalUnit,
+                relatedActivityTypeId: existingGoal.relatedActivityType?.id,
+                relatedNutrientId: existingGoal.relatedNutrientId,
+                targetValue: targetValue,
+                minValue: existingGoal.minValue,
+                maxValue: existingGoal.maxValue,
+                frequency: existingGoal.frequency,
+                startDate: existingGoal.startDate,
+                endDate: existingGoal.endDate,
+                priority: existingGoal.priority,
+                description: existingGoal.description
+            )
+            await updateGoal(goalId: existingGoal.id, with: updateRequest)
+        } else {
+            guard let goalTypeId = getGoalTypeId(forName: "Calories par jour (consommation)") else {
+                print("Erreur : Impossible de trouver le type d'objectif 'Poids cible'")
+                return
+            }
+
+            let createRequest = CreateGoalRequestDTO(
+                goalTypeId: goalTypeId,
+                goalStatus: "Actif",
+                goalUnit: "kcal",
+                relatedActivityTypeId: nil,
+                relatedNutrientId: nil,
+                targetValue: targetValue,
+                minValue: nil,
+                maxValue: nil,
+                frequency: nil,
+                startDate: formatDateForRequest(Date()),
+                endDate: nil,
+                priority: 1,
+                description: nil
+            )
+            await createGoal(createRequest)
+        }
+    }
+
+    func createOrUpdateBurnedCaloriesGoal(targetValue: Double) async {
+        if let existingGoal = goals.first(where: { $0.goalType.name == "Calories par jour (dépense)" }) {
+            let updateRequest = UpdateGoalRequestDTO(
+                goalTypeId: existingGoal.goalType.id,
+                goalStatus: existingGoal.goalStatus,
+                goalUnit: existingGoal.goalUnit,
+                relatedActivityTypeId: existingGoal.relatedActivityType?.id,
+                relatedNutrientId: existingGoal.relatedNutrientId,
+                targetValue: targetValue,
+                minValue: existingGoal.minValue,
+                maxValue: existingGoal.maxValue,
+                frequency: existingGoal.frequency,
+                startDate: existingGoal.startDate,
+                endDate: existingGoal.endDate,
+                priority: existingGoal.priority,
+                description: existingGoal.description
+            )
+            await updateGoal(goalId: existingGoal.id, with: updateRequest)
+        } else {
+            guard let goalTypeId = getGoalTypeId(forName: "Calories par jour (dépense)") else {
+                print("Erreur : Impossible de trouver le type d'objectif 'Poids cible'")
+                return
+            }
+
+            let createRequest = CreateGoalRequestDTO(
+                goalTypeId: goalTypeId,
+                goalStatus: "Actif",
+                goalUnit: "kcal",
+                relatedActivityTypeId: nil,
+                relatedNutrientId: nil,
+                targetValue: targetValue,
+                minValue: nil,
+                maxValue: nil,
+                frequency: nil,
+                startDate: formatDateForRequest(Date()),
+                endDate: nil,
+                priority: 1,
+                description: nil
+            )
+            await createGoal(createRequest)
+        }
+    }
+
     
     func getGoalTypeId(forName name: String) -> UUID? {
         return goalTypes.first(where: { $0.name == name })?.id
