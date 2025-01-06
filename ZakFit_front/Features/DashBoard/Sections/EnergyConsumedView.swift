@@ -1,21 +1,22 @@
 //
-//  CaloricDataView.swift
+//  EnergyConsumedView.swift
 //  ZakFit_front
 //
-//  Created by Aurélien on 02/01/2025.
+//  Created by Aurélien on 06/01/2025.
 //
 
 import SwiftUI
 
-struct CaloricDataView: View {
+struct EnergyConsumedView: View {
     @EnvironmentObject var dashboardViewModel: DashboardViewModel
+    @EnvironmentObject var sharedViewModel: SharedViewModel
     @State private var progress: CGFloat = 0.0
     @State private var isVisible: Bool = false
-
+    
     var body: some View {
         VStack {
-            if dashboardViewModel.bmr == 0 || dashboardViewModel.tdee == 0 {
-                Text("Veuillez compléter vos informations dans votre profil pour afficher vos données caloriques.")
+            if sharedViewModel.consumedEnergy == 0 || sharedViewModel.consumedCaloriesGoalTargetValue == 0 {
+                Text("Veuillez consommer des aliments pour afficher vos calories consommées.")
                     .font(.callout)
                     .foregroundColor(.red)
                     .multilineTextAlignment(.center)
@@ -30,19 +31,23 @@ struct CaloricDataView: View {
                     Circle()
                         .trim(from: 0.0, to: progress)
                         .stroke(style: StrokeStyle(lineWidth: 20, lineCap: .round))
-                        .foregroundColor(.orange)
+                        .foregroundColor(.green)
                         .rotationEffect(Angle(degrees: -90))
                         .animation(.easeInOut(duration: 1), value: progress)
                     
-                    VStack {
-                            Text("BMR / TDEE")
+                    VStack(alignment: .center) {
+                        Text("Énergie")
                             .font(.subheadline)
                             .fontWeight(.bold)
-                            .foregroundColor(.orange)
-                        Text("\(Int(dashboardViewModel.bmr)) kcal")
+                            .foregroundColor(.green)
+                        Text("consommée")
+                            .font(.subheadline)
+                            .fontWeight(.bold)
+                            .foregroundColor(.green)
+                        Text("\(Int(sharedViewModel.consumedEnergy)) kcal")
                             .font(.title2)
                             .fontWeight(.bold)
-                        Text("sur \(Int(dashboardViewModel.tdee)) kcal")
+                        Text("sur \(Int(sharedViewModel.consumedCaloriesGoalTargetValue)) kcal")
                             .font(.caption)
                             .foregroundColor(.gray)
                     }
@@ -55,24 +60,23 @@ struct CaloricDataView: View {
                 .onDisappear {
                     isVisible = false
                 }
-                .onChange(of: dashboardViewModel.bmr) {
+                .onChange(of: sharedViewModel.consumedEnergy) {
                     if isVisible { updateProgress() }
                 }
-                .onChange(of: dashboardViewModel.tdee) {
+                .onChange(of: sharedViewModel.consumedCaloriesGoalTargetValue) {
                     if isVisible { updateProgress() }
                 }
-                Spacer()
             }
         }
-        .frame(maxWidth: .infinity)
-        .padding(.top, 10)
+        .padding(.vertical, 10)
     }
     
     private func updateProgress() {
-        let newProgress = dashboardViewModel.tdee > 0 ? CGFloat(dashboardViewModel.bmr / dashboardViewModel.tdee) : 0.0
+        let newProgress = sharedViewModel.consumedCaloriesGoalTargetValue > 0
+        ? CGFloat(sharedViewModel.consumedEnergy / sharedViewModel.consumedCaloriesGoalTargetValue)
+        : 0.0
         withAnimation {
             self.progress = min(max(newProgress, 0.0), 1.0)
         }
     }
 }
-

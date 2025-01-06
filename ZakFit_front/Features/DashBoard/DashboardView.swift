@@ -9,13 +9,38 @@ import SwiftUI
 
 struct DashboardView: View {
     @EnvironmentObject var dashboardViewModel: DashboardViewModel
+    @State private var showInfoSheet: Bool = false
+    @State private var showInfoType: String = ""
 
     var body: some View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 20) {
-                    AppSection(title: "Données caloriques") {
-                        CaloricDataView()
+                    HStack {
+                        AppSectionWithInfo(
+                            title: "Données caloriques",
+                            infoType: "caloricData",
+                            showInfoSheet: $showInfoSheet,
+                            showInfoType: $showInfoType
+                        ) {
+                            CaloricDataView()
+                        }
+                        AppSectionWithInfo(
+                            title: "Équilibre nutritionnel",
+                            infoType: "nutritionalBalance",
+                            showInfoSheet: $showInfoSheet,
+                            showInfoType: $showInfoType
+                        ) {
+                            NutritionBalanceView()
+                        }
+                    }
+                    AppSectionWithInfo(
+                        title: "Bilan énergétique",
+                        infoType: "energyBalance",
+                        showInfoSheet: $showInfoSheet,
+                        showInfoType: $showInfoType
+                    ) {
+                        EnergyDataView()
                     }
                     AppSection(title: "Période de suivi") {
                         TrackingPeriodView()
@@ -35,5 +60,8 @@ struct DashboardView: View {
             }
         }
         .tint(Color("customOrange"))
+        .sheet(isPresented: $showInfoSheet) {
+            InfoSheetView(isPresented: $showInfoSheet, showInfoType: $showInfoType)
+        }
     }
 }

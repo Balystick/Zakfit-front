@@ -1,22 +1,22 @@
 //
-//  BMRView.swift
+//  EnergyburnedView.swift
 //  ZakFit_front
 //
-//  Created by Aurélien on 02/01/2025.
+//  Created by Aurélien on 06/01/2025.
 //
 
 import SwiftUI
 
-struct BMRView: View {
+struct EnergyBurnedView: View {
     @EnvironmentObject var dashboardViewModel: DashboardViewModel
+    @EnvironmentObject var sharedViewModel: SharedViewModel
     @State private var progress: CGFloat = 0.0
     @State private var isVisible: Bool = false
-    @State private var showInfoSheet: Bool = false
-
+    
     var body: some View {
         VStack {
-            if dashboardViewModel.bmr == 0 || dashboardViewModel.tdee == 0 {
-                Text("Veuillez compléter vos informations dans votre profil pour afficher vos données caloriques.")
+            if sharedViewModel.burnedEnergy == 0 || sharedViewModel.burnedCaloriesGoalTargetValue == 0 {
+                Text("Veuillez enregistrer une activité pour afficher vos calories brûlées.")
                     .font(.callout)
                     .foregroundColor(.red)
                     .multilineTextAlignment(.center)
@@ -31,31 +31,31 @@ struct BMRView: View {
                     Circle()
                         .trim(from: 0.0, to: progress)
                         .stroke(style: StrokeStyle(lineWidth: 20, lineCap: .round))
-                        .foregroundColor(.orange)
+                        .foregroundColor(.blue)
                         .rotationEffect(Angle(degrees: -90))
                         .animation(.easeInOut(duration: 1), value: progress)
                     
                     VStack {
-                        Button(action: {
-                            showInfoSheet = true
-                        }) {
-                            Text("BMR")
-                                .font(.headline)
-                                .foregroundColor(.orange)
-                            Image(systemName: "info.circle")
-                                .foregroundColor(.orange)
-                                .font(.headline)
-                        }
-                        .buttonStyle(BorderlessButtonStyle())
-                        Text("\(Int(dashboardViewModel.bmr)) kcal")
-                            .font(.largeTitle)
+                        Text("Énergie")
+                            .font(.subheadline)
                             .fontWeight(.bold)
-                        Text("sur \(Int(dashboardViewModel.tdee)) kcal")
+                            .foregroundColor(.blue)
+                        
+                        Text("brûlée")
+                            .font(.subheadline)
+                            .fontWeight(.bold)
+                            .foregroundColor(.blue)
+            
+                        Text("\(Int(sharedViewModel.burnedEnergy)) kcal")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        
+                        Text("sur \(Int(sharedViewModel.burnedCaloriesGoalTargetValue)) kcal")
                             .font(.caption)
                             .foregroundColor(.gray)
                     }
                 }
-                .frame(width: 200, height: 200)
+                .frame(width: 140, height: 140)
                 .onAppear {
                     isVisible = true
                     updateProgress()
@@ -63,22 +63,21 @@ struct BMRView: View {
                 .onDisappear {
                     isVisible = false
                 }
-                .onChange(of: dashboardViewModel.bmr) {
+                .onChange(of: sharedViewModel.burnedEnergy) {
                     if isVisible { updateProgress() }
                 }
-                .onChange(of: dashboardViewModel.tdee) {
+                .onChange(of: sharedViewModel.burnedCaloriesGoalTargetValue) {
                     if isVisible { updateProgress() }
                 }
             }
         }
-        .padding()
-        .sheet(isPresented: $showInfoSheet) {
-            BMRInfoSheetView(isPresented: $showInfoSheet)
-        }
+        .padding(.vertical, 10)
     }
     
     private func updateProgress() {
-        let newProgress = dashboardViewModel.tdee > 0 ? CGFloat(dashboardViewModel.bmr / dashboardViewModel.tdee) : 0.0
+        let newProgress = sharedViewModel.burnedCaloriesGoalTargetValue > 0
+        ? CGFloat(sharedViewModel.burnedEnergy / sharedViewModel.burnedCaloriesGoalTargetValue)
+        : 0.0
         withAnimation {
             self.progress = min(max(newProgress, 0.0), 1.0)
         }
